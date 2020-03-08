@@ -1,0 +1,828 @@
+﻿using System;
+using System.Collections.ObjectModel;
+using ByteCollection1 = System.Collections.ObjectModel.Collection<byte>;
+
+namespace ConsoleApp1
+{
+    public class OOP
+    {
+        public class Person
+        {
+            public string Name { get; set; }
+            public Person(string name)
+            {
+                Name = name;
+            }
+            public virtual void Display()
+            {
+                Console.WriteLine(Name);
+            }
+
+            /// <summary>
+            /// Можно не переопределять
+            /// </summary>
+            public virtual void NotOverrided()
+            {
+            }
+
+            /// <summary>
+            /// Сокрытие
+            /// </summary>
+            public void Hided()
+            {
+            }
+
+            /// <summary>
+            /// Сокрытие
+            /// </summary>
+            public void Hided2()
+            {
+            }
+        }
+
+        public class Employee : Person
+        {
+            public string Company { get; set; }
+            public Employee(string name, string company)
+                : base(name)
+            {
+                Company = company;
+            }
+
+            public override void Display()
+            {
+            }
+
+            public void Hided()
+            {
+            }
+
+            public new void Hided2()
+            {
+            }
+        }
+
+        public class Animal
+        {
+            public void Info() { Console.WriteLine("Animal"); }
+            public virtual void Say() { Console.WriteLine("Nothing to say"); }
+        }
+
+        public class Cat : Animal
+        {
+            public void Info() { Console.WriteLine("Cat"); }
+            // virtual в базовом классе - обязательно
+            // override - не обязательно
+            public override void Say() { Console.WriteLine("Meow"); }
+        }
+
+        public class Dog : Animal
+        {
+            public void Info() { Console.WriteLine("Dog"); }
+            public override void Say() { Console.WriteLine("Woof"); }
+        }
+
+
+
+        public class A
+        {
+            public virtual void Foo()
+            {
+                Console.WriteLine("Class A");
+            }
+        }
+        public class B : A
+        {
+            public override void Foo()
+            {
+                Console.WriteLine("Class B");
+            }
+        }
+
+        #region Abstract
+        abstract class Shape
+        {
+            // не может быть реализации
+            public abstract int GetArea();
+
+            void Foo()
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+        }
+
+        class Square : Shape
+        {
+            int side;
+
+            public Square(int n) => side = n;
+
+            // GetArea method is required to avoid a compile-time error.
+            public override int GetArea() => side * side;
+
+            //static void Main()
+            //{
+            //    var sq = new Square(12);
+            //    Console.WriteLine($"Area of the square = {sq.GetArea()}");
+            //}
+        }
+        #endregion
+
+ 
+
+        /// <summary>
+        /// В ходе выполнения данного кода генерируется исключение при вызове метода Sort()
+        /// Выберите одно из решений, реализация которого позволит этому коду отработать
+        /// корректно
+        /// </summary>
+        public class A2: IComparable
+        {
+            private int id { get; set; }
+            public A2(int newID)
+            {
+                id = newID;
+            }
+
+            public int CompareTo(object obj)
+            {
+                if (obj == null) return 1;
+
+                A2 a2 = obj as A2;
+                if (a2 != null)
+                    return this.id.CompareTo(a2.id);
+                else
+                    throw new ArgumentException("Object is not a a2");
+            }
+        }
+
+
+
+        public class Point
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+
+            public Point(int xVal, int yVal) {
+                X = xVal;
+                Y = yVal;
+            }
+        }
+
+
+
+
+
+
+        public class Base
+        {
+            public String className = "Base";
+        }
+
+        public class Derived1 : Base
+        {
+            private String className = "Derived1";
+        }
+
+        public class Derived2 : Base
+        {
+            public String className = "Derived2";
+        }
+
+
+
+        public abstract class B3
+        {
+            // private нельзя
+            // private virtual void Print()
+            
+            // protected можно
+            //protected virtual void Print()
+            
+            public virtual void Print()
+            {
+                Console.WriteLine("This is B3");
+            }
+        }
+
+        public class A3 : B3
+        {
+            //public virtual void Print()
+            //public new void Print()
+            private void Print()
+            //public override void Print()
+            {
+                Console.WriteLine("This is A3");
+            }
+        }
+
+
+
+
+
+        public class Car
+        {
+            public Car()
+            {
+                Console.WriteLine("The Car constructor invoked");
+            }
+        }
+        public class Bus : Car
+        {
+            public Bus()
+            {
+                Console.WriteLine("The Bus constructor invoked");
+            }
+
+            public static void Drive()
+            {
+                Console.WriteLine("The Drive method invoked");
+            }
+            public void Drive2()
+            {
+                Console.WriteLine("The Drive method invoked");
+            }
+        }
+
+
+
+
+   
+
+
+
+
+        public class Person2
+        {
+        }
+
+        public class Student : Person2
+        {
+        }
+
+        public class C<T>
+        {
+            public T x;
+        }
+
+
+
+
+
+        class A5
+        {
+            private string s;
+            public string S {
+                get
+                {
+                    return s;
+                }
+                set
+                {
+                    s = value;
+                }
+            }
+            // Уже объявлен как геттер
+            //public void get_S()
+            //{
+            //}
+            //public void set_S()
+            //{
+            //}
+        }
+
+
+
+        
+
+        public class A6
+        {
+            public A6() { Console.WriteLine("A created"); }
+        }
+
+        public class B6 : A6
+        {
+            private B6() { Console.WriteLine("B created"); }
+
+            public B6(string parameter)
+            {
+                Console.WriteLine("B created with parameter: {0}", parameter);
+            }
+        }
+
+        public class C6 : B6
+        {   // base обязательно, если в базовом классе есть конструктор с параметрами
+            public C6() : base("par")
+            {
+                Console.WriteLine("C created");
+            }
+        }
+
+
+
+
+
+        public class A7
+        {
+            
+        }
+        // базовый класс д.б. public
+        public class B7 : A7
+        {
+        }
+
+
+
+
+
+        public class Parent
+        {
+            static Parent() { Console.WriteLine("Parent Type ctor"); }
+            public Parent() { Console.WriteLine("Parent Instance ctor"); }
+        }
+
+        public class Child : Parent
+        {
+            public static int field1 = 0;
+            static Child() { Console.WriteLine("Child Type ctor"); }
+            public Child() { Console.WriteLine("Child Instance ctor"); }
+            public static void Foo()
+            {
+            }
+        }
+
+
+
+
+        public class A9
+        {
+            public virtual void M()
+            {
+                Console.WriteLine("This is A");
+            }
+        }
+
+        public class B9 : A9
+        {
+
+            //public void M()
+            //public virtual void M()
+            public new void M()
+            //public override void M()
+            {
+                Console.WriteLine("This is B");
+            }
+        }
+
+
+
+        public class A10
+        {
+            static A10()
+            {
+                Console.WriteLine("Static Hello from A");
+            }
+            public A10()
+            {
+                Console.WriteLine("Hello from A");
+            }
+        }
+
+        public class B10
+        {
+            public static string x = "Hello";
+            static B10()
+            {
+                Console.WriteLine("Static Hello from B");
+            }
+            public B10()
+            {
+                Console.WriteLine("Hello from B");
+            }
+        }
+
+
+
+
+
+        public class A11
+        {
+            public A11()
+            {
+                Console.WriteLine("class A");
+            }
+        }
+
+        public class B11 : A11
+        {
+            public B11()
+            {
+                Console.WriteLine("class B");
+            }
+        }
+
+
+
+
+        private class A12
+        {
+            // если конструктор private - не скомпилируется
+            public A12()
+            {
+            }
+        }
+
+        private class B12 : A12
+        {
+            private B12()
+            {
+            }
+        }
+
+
+
+
+
+        public class A13
+        {
+        }
+
+        public class B13 : A13
+        {
+        }
+
+
+
+
+        public class A14
+        {
+            public void Method()
+            {
+                Console.WriteLine("MethodA");
+            }
+        }
+
+        public class B14 : A14
+        {
+            new public void Method()
+            {
+                Console.WriteLine("MethodB");
+            }
+        }
+
+        public class C14 : B14
+        {
+            new public void Method()
+            {
+                Console.WriteLine("MethodC");
+            }
+        }
+
+
+
+
+        public partial class A15
+        {
+            // сначала сработает конструктор типа
+            public A15()
+            {
+                Console.WriteLine("A created instance ctor");
+            }
+        }
+
+        partial class A15
+        {
+            static A15()
+            {
+                Console.WriteLine("A created static ctor");
+            }
+        }
+
+
+
+
+
+        class OuterClass
+        {
+            private int i;
+            protected int j;
+            public int k;
+
+            public OuterClass()
+            {
+                InnerClass nested = new InnerClass(this);
+                // ошибка компиляции
+                //nested.a = 1;
+                //nested.b = 1;
+                nested.c = 1;
+            }
+
+            class InnerClass
+            {
+                private int a;
+                protected int b;
+                public int c;
+
+                public InnerClass(OuterClass outerClass)
+                {
+                    outerClass.i = 1;
+                    outerClass.j = 1;
+                    outerClass.k = 1;
+                }
+            }
+        }
+
+
+        public class A16
+        {
+            public virtual void GetValue(int a)
+            {
+                Console.WriteLine("A:GetValue:int a = {0}", a);
+            }
+        }
+        public class B16 : A16
+        {
+            public override void GetValue(int a)
+            {
+                Console.WriteLine("B:GetValue:int a = {0}", a);
+            }
+            public void GetValue(object a)
+            {
+                Console.WriteLine("B:GetValue:object a = {0}", a);
+            }
+        }
+
+
+
+        #region Ex1
+        private class User
+        {
+            private string name;
+            public User(string name)
+            {
+                this.name = name;
+            }
+
+            public string GetName()
+            {
+                return name;
+            }
+        }
+
+        private class User_
+        {
+            public string Name { get; set; }
+        }
+
+        public void Ex1()
+        {
+            User u = new User("Oleg");
+            User_ u_ = new User_();
+            u_.Name = "Oleg";
+
+            var res1 = u.GetName();
+            var res2 = u_.Name;
+        }
+        #endregion
+
+        #region Полиморфизм
+        public class BaseClass
+        {
+            public void DoWork() { Console.WriteLine("DoWork base"); }
+            public virtual void DoWork2() { Console.WriteLine("DoWork2 base"); }
+            public virtual void DoWork3() { Console.WriteLine("DoWork3 base"); }
+
+            public int WorkField;
+            public int WorkProperty
+            {
+                get { return 0; }
+            }
+        }
+
+        public class DerivedClass : BaseClass
+        {
+            public new void DoWork() { Console.WriteLine("DoWork derived"); }
+            public override void DoWork2() { Console.WriteLine("DoWork2 derived"); }
+            public sealed override void DoWork3() { Console.WriteLine("DoWork3 sealed override derived"); }
+
+            public new int WorkField;
+            public new int WorkProperty
+            {
+                get { return 0; }
+            }
+        }
+
+        public class DerivedClass2 : BaseClass
+        {
+            public override void DoWork3() { Console.WriteLine("DoWork3 override derived"); }
+        }
+
+        public void Ex2()
+        {
+            DerivedClass B = new DerivedClass();
+            B.DoWork();  // Calls the new method.
+
+            BaseClass A = (BaseClass)B;
+            A.DoWork();  // Calls the old method.
+            Console.WriteLine("-------------------------");
+            B.DoWork2(); // переопределённый метод
+            A.DoWork2(); // переопределённый метод
+            Console.WriteLine("-------------------------");
+            BaseClass C = new DerivedClass2();
+            B.DoWork3();
+            A.DoWork3();
+            C.DoWork3();
+        }
+
+        #endregion
+
+        #region
+        public class TypeA
+        {
+            public class TypeB : TypeA
+            {
+                public override void MethodA()
+                {
+                    Console.WriteLine("TypeB");
+                }
+            }
+
+            public virtual void MethodA()
+            {
+                Console.WriteLine("TypeA");
+            }
+        }
+        #endregion
+
+        #region
+        public void ModifyInt(int i)
+        {
+            i = 99;
+        }
+
+        public void ModifyString(string s)
+        {
+            s = "Hello, I've been modified";
+        }
+        #endregion
+
+        #region
+        class A17
+        {
+            static A17()
+            {
+            }
+        }
+        class B17 : A17
+        {   
+            // public нельзя
+            static B17() //: base()
+            {            // нельзя т.к. static
+            }
+        }
+        #endregion
+
+        #region
+        /*[private | public]*/
+        class A18
+        {
+            public A18()
+            {
+            }
+        }
+        /*[private | public]*/
+        private class B18 : A18
+        {
+            /*[private | public]*/
+            private B18() : base() // констр A18 д.б. public
+            {
+            }
+        }
+        #endregion
+
+        #region
+        public class Clz
+        {
+            /*public*/ static Clz()   // CS0515, remove public keyword  
+            {
+            }
+        }
+        #endregion
+
+        #region
+        class ByteCollection2 : Collection<byte> { }
+        public void Ex3()
+        {
+            // это истинный класс, поэтому равны
+            Console.WriteLine(typeof(ByteCollection1) == typeof(Collection<byte>));
+            // это наследник, поэтому не равны
+            Console.WriteLine(typeof(ByteCollection2) == typeof(Collection<byte>));
+        }
+        #endregion
+
+        #region
+        class A19 { }
+        interface Inner { }
+        struct S : //A19,
+                   Inner
+        {
+            // иниц-ть нельзя
+            //int num = 10;
+            public int num2;
+            // без параметров нельзя
+            //S() { }
+            S(int num2)
+            {
+                this.num2 = num2;
+            }
+            static S() { }
+        }
+        #endregion
+
+        #region
+        protected internal class A20 { }
+        //internal protected class A20 { }
+        #endregion
+
+        #region
+        public class A21
+        {
+            public virtual void Print()
+            {
+                Console.WriteLine("A::Print");
+            }
+        }
+
+        public class B21 : A21
+        {
+            public override void Print()
+            {
+                Console.WriteLine("B::Print");
+            }
+        }
+
+        public class C21 : A21
+        {
+            //public void Print()
+            public new void Print()
+            {
+                base.Print();
+                Console.WriteLine("C::Print");
+            }
+        }
+        #endregion
+
+
+        #region BASE
+        public class A22
+        {
+            public A22()
+            {
+            }
+
+            public A22(string param)
+            {
+            }
+        }
+        public class B22 : A22
+        {
+            public B22() : base()
+            {
+            }
+
+            public B22(string param) : base(param)
+            {
+            }
+        }
+        #endregion
+
+        #region OBJECT INHERITANCE
+        class A23 : Object
+        {
+        }
+        #endregion
+
+        //enum E1 { One, Two }
+
+        //struct S1 : E1
+        //{
+        //}
+
+        //class A16 : E1, S1
+        //{
+        //}
+
+        /*
+		отличия когда асинхронный метод возвращает то void то Task
+		когда void - нужно чтобы просто асинхронно выполнился метод
+		когда Task - нужно чтобы вернулась задача, чтобы потом получить её результат
+		
+		в асинхронном методе выполняется await ... метод . если в этом внутреннем методе возникло исключение
+		то его можно поймать в вызывающем методе try/catch
+		
+		если объявить задачу или thread в вызывающем методе и там вызвать исключение, то try/catch не обработает
+		*/
+
+
+    }
+}
