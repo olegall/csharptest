@@ -101,20 +101,9 @@ namespace ConsoleApp1
             #endregion
 
             #region Async/Await
-            /*
-            async Task MethodA(double val)
-            {
-                var res = Math.Sin(val); // let's assume it takes 5sec
-                await httpClient.Post(...); // let's assume it takes 2sec
-            }
-
-            a) var task = MethodA(123); b) await task;
-            Сколько секунд будет выполняться метод? Ответ: 5
-            Каак сделать, чтобы метод выполнился мгновенно? Что нужно изменить в MethodA
-            */
-
-            //MainAsync(args).GetAwaiter().GetResult();
-            //Delay();
+            //new AsyncAwait().HttpRequest();
+            //new AsyncAwait().HttpRequestAsync();
+            new AsyncAwait().TaskDelay();
             #endregion
 
             int[] arr = new int[4] { 2, 1, 3, 4};

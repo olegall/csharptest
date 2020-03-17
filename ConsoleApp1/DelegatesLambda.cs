@@ -8,6 +8,12 @@ namespace ConsoleApp1
 {
     public delegate void Print(int value);
 
+    /*
+    ВОПРОСЫ
+    
+    async delegate
+    
+    */
 
     class DelegatesLambda
     {

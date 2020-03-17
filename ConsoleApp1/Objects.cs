@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Net;
 
 namespace ConsoleApp1
 {
@@ -9,7 +11,7 @@ namespace ConsoleApp1
 
     class Objects
     {
-        public void CompareObjects()
+        public  async Task CompareObjects()
         {
             var byte1 = new byte();
             var byte2 = new byte();
@@ -18,6 +20,24 @@ namespace ConsoleApp1
             var arr1 = new byte[0];
             var arr2 = new byte[10];
             var result2 = new byte[0] == new byte[0];
+        }
+
+        public async Task CompareObjects2()
+        {
+            string remoteUrl = string.Format("http://google.com");
+            HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(remoteUrl);
+            Task<WebResponse> response = httpRequest.GetResponseAsync();
+
+            var asyncResult1 = response.Result;
+            var asyncResult2 = response.GetAwaiter().GetResult();
+            var asyncResult3 = await response;
+
+            var a1 = asyncResult1 == asyncResult2;
+            var a2 = asyncResult2 == asyncResult3;
+            var a3 = asyncResult1 == asyncResult3;
+            var a4 = asyncResult1.Equals(asyncResult2);
+            var a5 = asyncResult2.Equals(asyncResult3);
+            var a6 = asyncResult1.Equals(asyncResult3);
         }
 
         class User

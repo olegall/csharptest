@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncAwait.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Generics.cs" />
