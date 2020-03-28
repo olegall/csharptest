@@ -636,7 +636,7 @@ namespace ConsoleApp1
 
         #endregion
 
-        #region
+        #region Example
         public class TypeA
         {
             public class TypeB : TypeA
@@ -654,7 +654,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example
         public void ModifyInt(int i)
         {
             i = 99;
@@ -666,7 +666,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example 
         class A17
         {
             static A17()
@@ -682,7 +682,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example
         /*[private | public]*/
         class A18
         {
@@ -700,7 +700,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example
         public class Clz
         {
             /*public*/ static Clz()   // CS0515, remove public keyword  
@@ -709,7 +709,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example
         class ByteCollection2 : Collection<byte> { }
         public void Ex3()
         {
@@ -720,7 +720,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example
         class A19 { }
         interface Inner { }
         struct S : //A19,
@@ -739,12 +739,12 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region
+        #region Example
         protected internal class A20 { }
         //internal protected class A20 { }
         #endregion
 
-        #region
+        #region Example
         public class A21
         {
             public virtual void Print()
@@ -823,6 +823,11 @@ namespace ConsoleApp1
 		если объявить задачу или thread в вызывающем методе и там вызвать исключение, то try/catch не обработает
 		*/
 
-
+        #region Поле класса с типом как сам класс
+        class A24
+        {
+            A24 Foo { get; set; }
+        }
+        #endregion
     }
 }
