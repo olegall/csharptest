@@ -104,7 +104,12 @@ namespace ConsoleApp1
             //new AsyncAwait().HttpRequest();
             //new AsyncAwait().HttpRequestAsync();
             new AsyncAwait().TaskDelay();
+            new AsyncAwait().CancellationToken();
             #endregion
+
+
+
+
 
             int[] arr = new int[4] { 2, 1, 3, 4};
             Array.Sort(arr);
