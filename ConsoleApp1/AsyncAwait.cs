@@ -10,36 +10,40 @@ using System.Threading;
 
 namespace ConsoleApp1
 {
-    /* 
-    ВОПРОСЫ
+    #region QUESTIONS
+        /* 
+        ВОПРОСЫ
 
-    var awaiter = response.GetAwaiter();            
-    так работает. 
-            
-    TaskAwaiter<WebResponse> awaiter = response.GetAwaiter();
-    если явно типизировать, то требует сборку. Навести мышью и можно применить сборку. Почему с var сборку можно не применять?
+        var awaiter = response.GetAwaiter();            
+        так работает. 
 
-    -------------------------------
+        TaskAwaiter<WebResponse> awaiter = response.GetAwaiter();
+        если явно типизировать, то требует сборку. Навести мышью и можно применить сборку. Почему с var сборку можно не применять?
 
-    Task использует поток?
+        -------------------------------
 
-    -------------------------------
+        Task использует поток?
 
-    Is Task a thread
+        -------------------------------
 
-    -------------------------------
+        Is Task a thread
 
-    Visual C#: Thread.Sleep vs. Task.Delay 
+        -------------------------------
 
-    -------------------------------
+        Visual C#: Thread.Sleep vs. Task.Delay 
 
-    a) var task = MethodA(123); b) await task;
-    Сколько секунд будет выполняться метод? Ответ: 5
-    Каак сделать, чтобы метод выполнился мгновенно? Что нужно изменить в MethodA
-    
-    //MainAsync(args).GetAwaiter().GetResult();
-    //Delay();
-    */
+        -------------------------------
+
+        a) var task = MethodA(123); b) await task;
+        Сколько секунд будет выполняться метод? Ответ: 5
+        Каак сделать, чтобы метод выполнился мгновенно? Что нужно изменить в MethodA
+
+        //MainAsync(args).GetAwaiter().GetResult();
+        //Delay();
+
+         Thread.Sleep(5000); в цикле создаёт новую задачу? Создаются несколько задач?
+        */
+    #endregion
 
     class AsyncAwait
     {
@@ -150,5 +154,98 @@ namespace ConsoleApp1
             return 5;
         }
 
+        public void CancellationToken()
+        {
+            // Define the cancellation token.
+            CancellationTokenSource source = new CancellationTokenSource();
+            CancellationToken token = source.Token;
+
+            Random rnd = new Random();
+            Object lockObj = new Object();
+
+            List<Task<int[]>> tasks = new List<Task<int[]>>();
+            TaskFactory factory = new TaskFactory(token);
+            for (int taskCtr = 0; taskCtr <= 10; taskCtr++)
+            {
+                int iteration = taskCtr + 1;
+                tasks.Add(factory.StartNew(() => {
+                    int value;
+                    int[] values = new int[10];
+                    for (int ctr = 1; ctr <= 10; ctr++)
+                    {
+                        lock (lockObj)
+                        {
+                            value = rnd.Next(0, 101);
+                        }
+                        if (value == 0)
+                        {
+                            source.Cancel();
+                            Console.WriteLine("Cancelling at task {0}", iteration);
+                            break;
+                        }
+                        values[ctr - 1] = value;
+                    }
+                    return values;
+                }, token));
+            }
+            try
+            {
+                Task<double> fTask = factory.ContinueWhenAll(tasks.ToArray(),
+                                                             (results) => {
+                                                                 Console.WriteLine("Calculating overall mean...");
+                                                                 long sum = 0;
+                                                                 int n = 0;
+                                                                 foreach (var t in results)
+                                                                 {
+                                                                     foreach (var r in t.Result)
+                                                                     {
+                                                                         sum += r;
+                                                                         n++;
+                                                                     }
+                                                                 }
+                                                                 return sum / (double)n;
+                                                             }, token);
+                Console.WriteLine("The mean is {0}.", fTask.Result);
+                var aa = fTask.Result;
+            }
+            catch (AggregateException ae)
+            {
+                foreach (Exception e in ae.InnerExceptions)
+                {
+                    if (e is TaskCanceledException)
+                        Console.WriteLine("Unable to compute mean: {0}",
+                                          ((TaskCanceledException)e).Message);
+                    else
+                        Console.WriteLine("Exception: " + e.GetType().Name);
+                }
+            }
+            finally
+            {
+                source.Dispose();
+            }
+        }
+
+        //static CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+        //CancellationToken token = cancelTokenSource.Token;
+        //int number = 6;
+        //public void Ex1()
+        //{
+        //    var number = 6;
+        //    Task task1 = new Task(() =>
+        //    {
+        //        int result = 1;
+        //        for (int i = 1; i <= number; i++)
+        //        {
+        //            if (token.IsCancellationRequested)
+        //            {
+        //                Console.WriteLine("Операция прервана");
+        //                return;
+        //            }
+        //            result *= i;
+        //            Console.WriteLine($"Факториал числа {number} равен {result}");
+        //            Thread.Sleep(5000);
+        //        }
+        //    });
+        //}
     }
 }
