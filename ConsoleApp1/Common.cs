@@ -16,7 +16,8 @@ namespace ConsoleApp1
         //{
         //}
 
-        
+        // Вместо IEnumerable<int>
+        //List<Task<int[]>> tasks = new List<Task<int[]>>();
 
         public void Ex1()
         {
