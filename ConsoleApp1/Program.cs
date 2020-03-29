@@ -104,7 +104,8 @@ namespace ConsoleApp1
             //new AsyncAwait().HttpRequest();
             //new AsyncAwait().HttpRequestAsync();
             new AsyncAwait().TaskDelay();
-            new AsyncAwait().CancellationToken();
+            new AsyncAwait().CancellationTokenMicrosoft();
+            new AsyncAwait().CancellationTokenSimple();
             #endregion
 
 

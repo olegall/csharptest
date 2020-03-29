@@ -154,7 +154,7 @@ namespace ConsoleApp1
             return 5;
         }
 
-        public void CancellationToken()
+        public void CancellationTokenMicrosoft()
         {
             // Define the cancellation token.
             CancellationTokenSource source = new CancellationTokenSource();
@@ -206,7 +206,6 @@ namespace ConsoleApp1
                                                                  return sum / (double)n;
                                                              }, token);
                 Console.WriteLine("The mean is {0}.", fTask.Result);
-                var aa = fTask.Result;
             }
             catch (AggregateException ae)
             {
@@ -218,6 +217,42 @@ namespace ConsoleApp1
                     else
                         Console.WriteLine("Exception: " + e.GetType().Name);
                 }
+            }
+            finally
+            {
+                source.Dispose();
+            }
+        }
+
+        public void CancellationTokenSimple()
+        {
+            // Define the cancellation token.
+            CancellationTokenSource source = new CancellationTokenSource();
+            CancellationToken token = source.Token;
+
+            Random rnd = new Random();
+            Object lockObj = new Object();
+
+            List<Task<int[]>> tasks = new List<Task<int[]>>();
+            TaskFactory factory = new TaskFactory(token);
+            for (int taskCtr = 0; taskCtr <= 10; taskCtr++)
+            {
+                int iteration = taskCtr + 1;
+                tasks.Add(factory.StartNew(() => {
+                    source.Cancel();
+                    return new int[0];
+                }, token));
+            }
+            try
+            {
+                Task<double> fTask = factory.ContinueWhenAll(tasks.ToArray(),
+                                                             (results) => {
+                                                                 return 100.0;
+                                                             }, token);
+                Console.WriteLine("The mean is {0}.", fTask.Result);
+            }
+            catch (AggregateException ae)
+            {
             }
             finally
             {
