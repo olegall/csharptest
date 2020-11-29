@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using static System.Math;
 
-
-
 namespace ConsoleApp1
 {
-
     #region Namespace
     namespace Namespace2     // можно вкладывать
     {
@@ -27,6 +24,13 @@ namespace ConsoleApp1
 
     public class Keywords
     {
+        private readonly string subcaption;
+
+        public Keywords(string subcaption)
+        {
+            this.subcaption = subcaption;
+        }
+
         #region As
         public void As()
         {
@@ -192,7 +196,7 @@ namespace ConsoleApp1
             {
                 Console.WriteLine("BaseC Foo");
             }
-
+            
             //public virtual void Foo2()
             //{
             //    Console.WriteLine("BaseC Foo2");
@@ -222,8 +226,8 @@ namespace ConsoleApp1
             Console.WriteLine(derivedC.x);
             baseC.Foo();
             derivedC.Foo();
-
-            Console.WriteLine("----------------");
+            
+            Console.WriteLine(subcaption);
 
             baseC = new DerivedC();
             Console.WriteLine(baseC.x);
@@ -381,7 +385,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region THIS 1
+        #region THIS1
         class Employee
         {
             private string name;
@@ -403,7 +407,7 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region THIS 2
+        #region THIS2
         class SampleCollection<T>
         {
             // Declare an array to store the data elements.

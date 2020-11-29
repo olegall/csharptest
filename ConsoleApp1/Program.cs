@@ -11,9 +11,9 @@ namespace ConsoleApp1
 {
     class Program
     {
-        OOP OOP = new OOP();
+
         //LINQ LINQ = new LINQ();
-        Keywords keywords = new Keywords();
+        
 
         private static string result;
         
@@ -21,6 +21,13 @@ namespace ConsoleApp1
         delegate void Printer();
         public delegate void MessageDelegate(string message);
         #endregion
+
+        public const string CAPTION_BEGIN = "\r\n\r\n\r\n*****";
+        public const string CAPTION_END = "*****";
+        public const string SUB_CAPTION = "-----";
+
+        static OOP OOP = new OOP(SUB_CAPTION);
+        static Keywords keywords = new Keywords(SUB_CAPTION);
 
         static void Main(string[] args)
         {
@@ -106,6 +113,7 @@ namespace ConsoleApp1
             new AsyncAwait().TaskDelay();
             new AsyncAwait().CancellationTokenMicrosoft();
             new AsyncAwait().CancellationTokenSimple();
+            //new AsyncAwait().CancellationTokenSimple2();
             #endregion
 
 
@@ -134,16 +142,16 @@ namespace ConsoleApp1
             var a3 = new Derived1().className;
             var a4 = new Derived2().className;
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             new A3().Print();
 
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             Bus.Drive();
-            Console.WriteLine("---");
+            Console.WriteLine(SUB_CAPTION);
             new Bus().Drive2();
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             Person2 p4 = new Person2();
             Student s = new Student();
             C<Person2> cp = new C<Person2>();
@@ -157,18 +165,18 @@ namespace ConsoleApp1
             s = cs.x;
             
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             new B6("Quizful");
-            Console.WriteLine("---");
+            Console.WriteLine(SUB_CAPTION);
             new C6();
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             new B8().Somework();
             (new B8() as IA).Somework();
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             new Child();
-            Console.WriteLine("---");
+            Console.WriteLine(SUB_CAPTION);
             // вызывается статический конструктор (убрать new Child())
             Child.field1 = 1;
             // вызывается статический конструктор (или этот вариант или выше)
@@ -177,12 +185,11 @@ namespace ConsoleApp1
             // не вызывается статический конструктор
             Child.Foo();
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             //A9 a9 = new A9();
             //B9 b9 = new B9();
             //a9.M();
             //b9.M();
-            //Console.WriteLine("---");
             //a9 = b9;
             //a9.M();
             //b9.M();
@@ -192,26 +199,26 @@ namespace ConsoleApp1
             a9.M();
             //b9.M();
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             A10 a10 = new A10();
             Console.WriteLine(B10.x);
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             A11 a11 = new B11();
             B11 b11 = new B11();
 
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             A13 a13 = new B13();
             Console.WriteLine(a13.GetType() == typeof(A13));
             Console.WriteLine(a13.GetType() == typeof(B13));
             Console.WriteLine(a13 is A13);
             Console.WriteLine(a13 is B13);
-            Console.WriteLine("---");
+            Console.WriteLine(SUB_CAPTION);
             Console.WriteLine(new A13() is B13);
             Console.WriteLine(new B13() is A13);
             Console.WriteLine(new A13() is A13);
             Console.WriteLine(new B13() is B13);
-            Console.WriteLine("---");
+            Console.WriteLine(SUB_CAPTION);
             B13 b13 = new B13();
             //if (a13 as B13) { }
             //         Type 
@@ -221,7 +228,7 @@ namespace ConsoleApp1
             //if (a13 is b13) { }
             if (a13 is B13 == null) { }
             //if (a as B == null) { }
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine(CAPTION_END);
             B14 a1_ = new B14();
             A14 a2_ = new B14();
             A14 a3_ = a1_;
@@ -234,10 +241,11 @@ namespace ConsoleApp1
             a4_.Method();
             a5_.Method();
 
-            Console.WriteLine("|||||||||||||||| OOP |||||||||||||||||||||||");
+            Console.WriteLine($"{CAPTION_BEGIN} OOP {CAPTION_END}");
             new A15();
 
             #region OOP
+            Console.WriteLine($"{CAPTION_BEGIN} OOP {CAPTION_END}");
 
             #region
             int value = 10;
@@ -247,8 +255,8 @@ namespace ConsoleApp1
             a16.GetValue(value);
             b16.GetValue(value);
             a17.GetValue(value);
-            new OOP().Ex1();
-            new OOP().Ex2();
+            OOP.Ex1();
+            OOP.Ex2();
             #endregion
 
             #region
@@ -259,27 +267,27 @@ namespace ConsoleApp1
             #endregion
 
             #region
-            Console.WriteLine("---------------------");
+            Console.WriteLine(SUB_CAPTION);
             int i2 = 10;
             string s2 = "HelloWorld";
 
             Console.WriteLine("i = " + i2);
-            new OOP().ModifyInt(i2);
+            OOP.ModifyInt(i2);
             Console.WriteLine("i = " + i2);
 
             Console.WriteLine("s = " + s2);
             // строка не меняется
-            new OOP().ModifyString(s2);
+            OOP.ModifyString(s2);
             Console.WriteLine("s = " + s2);
             #endregion
 
             #region
-            Console.WriteLine("---------------------");
-            new OOP().Ex3();
+            Console.WriteLine(SUB_CAPTION);
+            OOP.Ex3();
             #endregion
 
             #region
-            Console.WriteLine("------------------------------");
+            Console.WriteLine(SUB_CAPTION);
             A21 a21 = new A21();
             B21 b21 = new B21();
             C21 c21 = new C21();
@@ -291,6 +299,7 @@ namespace ConsoleApp1
             #endregion
 
             #region LINQ
+            Console.WriteLine($"{CAPTION_BEGIN} LINQ {CAPTION_END}");
             new LINQ().Ex1();
             new LINQ().Ex2();
             new LINQ().Ex3();
@@ -298,22 +307,25 @@ namespace ConsoleApp1
             #endregion
 
             #region DELEGATES
-            Console.WriteLine("|||||||||||||||| Delegates Lambda |||||||||||||||||||||||");
+            Console.WriteLine($"{CAPTION_BEGIN} DELEGATES LAMBDA {CAPTION_END}");
             new DelegatesLambda().Ex1();
             new DelegatesLambda().Ex3();
             #endregion
 
             #region OBJECTS
+            Console.WriteLine($"{CAPTION_BEGIN} OBJECTS {CAPTION_END}");
             //new Objects().CompareObjects();
             //new Objects().Ex0();
             //new Objects().Ex1();
             //new Objects().Ex2();
             //new Objects().Ex3();
             new Objects().Nullable();
+
+            new Objects().DoRefObj();
             #endregion
 
             #region EXCEPTIONS
-            Console.WriteLine("|||||||||||||||| EXCEPTIONS |||||||||||||||||||||||");
+            Console.WriteLine($"{CAPTION_BEGIN} EXCEPTIONS {CAPTION_END}");
             //new Exceptions().Ex1();
             //new Exceptions().Ex2();
             //var exc_ex3 = new Exceptions().Ex3();
@@ -323,7 +335,7 @@ namespace ConsoleApp1
             #endregion
 
             #region COMMON
-            Console.WriteLine("|||||||||||||||| COMMON |||||||||||||||||||||||");
+            Console.WriteLine($"{CAPTION_BEGIN} COMMON {CAPTION_END}");
             new Common().Ex1();
             new Common().Ex2();
             new Common().Ex3();
@@ -335,18 +347,17 @@ namespace ConsoleApp1
             #endregion
 
             #region KEYWORDS
-            Console.WriteLine("|||||||||||||||| KEYWORDS |||||||||||||||||||||||");
-
-            new Keywords().As();
+            Console.WriteLine($"{CAPTION_BEGIN} KEYWORDS {CAPTION_END}");
+            keywords.As();
             //new Keywords().Checked();
-            new Keywords().Unchecked();
-            new Keywords().Default();
-            new Keywords().Enum();
-            new Keywords().Is();
-            new Keywords().Is2();
+            keywords.Unchecked();
+            keywords.Default();
+            keywords.Enum();
+            keywords.Is();
+            keywords.Is2();
 
             #region Yield
-            Console.WriteLine("---------- Yield -----------");
+            Console.WriteLine($"{SUB_CAPTION} Yield {SUB_CAPTION}");
             foreach (string s_ in Keywords.GetStrings())
             {
                 Console.WriteLine(s_);
@@ -357,23 +368,23 @@ namespace ConsoleApp1
             {
                 Console.WriteLine(ch);
             }
-            Console.WriteLine("");
             #endregion
 
             
-            new Keywords().Params();
+            keywords.Params();
             
 
-            Console.WriteLine("---------- New1 -----------");
-            new Keywords().New1();
+            Console.WriteLine($"{SUB_CAPTION} New1 {SUB_CAPTION}");
+            keywords.New1();
 
-            new Keywords().ImplicitExplicitOperator();
-            new Keywords().Operator();
-            new Keywords().This1();
-            new Keywords().This2();
+            keywords.ImplicitExplicitOperator();
+            keywords.Operator();
+            keywords.This1();
+            keywords.This2();
             #endregion
 
             #region OPERATORS
+            Console.WriteLine($"{CAPTION_BEGIN} OPERATORS {CAPTION_END}");
             new Operators().NullCoalescing();
             #endregion
 
@@ -387,7 +398,7 @@ namespace ConsoleApp1
             await Delay2Async();
             //Delay1Async();
             //Delay2Async();
-            Console.WriteLine("|||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+            Console.WriteLine($"{CAPTION_END}");
             //Task t1 = Delay1Async();
             //Task t2 = Delay2Async();
             //await t1;
@@ -409,7 +420,7 @@ namespace ConsoleApp1
                     //Console.Write(Thread.CurrentThread.ManagedThreadId + " ");
                     Console.Write("1 ");
                 }
-                Console.WriteLine("||| Task1 stopped");
+                Console.WriteLine("Task1 stopped");
             });
         }
 
@@ -422,7 +433,7 @@ namespace ConsoleApp1
                     //Console.Write(Thread.CurrentThread.ManagedThreadId + " ");
                     Console.Write("2 ");
                 }
-                Console.WriteLine("||| Task2 stopped");
+                Console.WriteLine("Task2 stopped");
             });
         }
 

@@ -19,6 +19,9 @@ namespace ConsoleApp1
         // Вместо IEnumerable<int>
         //List<Task<int[]>> tasks = new List<Task<int[]>>();
 
+        // Преобразование объекта в массив int. Ещё способы
+        //IEnumerable<int> a2 = new object() as IEnumerable<int>;
+
         public void Ex1()
         {
             int i, j, s = 0;
@@ -27,8 +30,6 @@ namespace ConsoleApp1
                 s += i;
             }
             Console.WriteLine(s);
-
-
         }
 
         public void Ex2()
@@ -71,7 +72,7 @@ namespace ConsoleApp1
             // An array of a nullable t
             int?[] arr = new int?[10];
         }
-
+                                                                                                                                                    
         public void Ex6()
         {
             object iBoxed = null;
@@ -91,6 +92,8 @@ namespace ConsoleApp1
         {
             //var obj = null; // нельзя - не типизирована
             object obj = null;
+
         }
+        
     }
 }

@@ -19,19 +19,12 @@ namespace ConsoleApp1
 
         TaskAwaiter<WebResponse> awaiter = response.GetAwaiter();
         если явно типизировать, то требует сборку. Навести мышью и можно применить сборку. Почему с var сборку можно не применять?
-
         -------------------------------
-
         Task использует поток?
-
         -------------------------------
-
         Is Task a thread
-
         -------------------------------
-
         Visual C#: Thread.Sleep vs. Task.Delay 
-
         -------------------------------
 
         a) var task = MethodA(123); b) await task;
@@ -230,34 +223,68 @@ namespace ConsoleApp1
             CancellationTokenSource source = new CancellationTokenSource();
             CancellationToken token = source.Token;
 
-            Random rnd = new Random();
-            Object lockObj = new Object();
+            List<Task<int>> tasks = new List<Task<int>>();
+            //Task task = new Task(() => { });
+            //List<Task> tasks = (task as IList<Task>).ToList();
 
-            List<Task<int[]>> tasks = new List<Task<int[]>>();
             TaskFactory factory = new TaskFactory(token);
-            for (int taskCtr = 0; taskCtr <= 10; taskCtr++)
-            {
-                int iteration = taskCtr + 1;
-                tasks.Add(factory.StartNew(() => {
-                    source.Cancel();
-                    return new int[0];
-                }, token));
-            }
+            tasks.Add(factory.StartNew(() => {
+                source.Cancel();
+                return 1;
+            }, token));
+
             try
             {
-                Task<double> fTask = factory.ContinueWhenAll(tasks.ToArray(),
-                                                             (results) => {
-                                                                 return 100.0;
-                                                             }, token);
-                Console.WriteLine("The mean is {0}.", fTask.Result);
+                Task<double> fTask = factory.ContinueWhenAny(tasks.ToArray(), 
+                                                             (results) => { return 100.0; }, 
+                                                             token);
+                var result =  fTask.Result; // если получаем результат и есть source.Cancel(), то эксепшн
             }
-            catch (AggregateException ae)
+            catch (AggregateException ex)
             {
             }
             finally
             {
                 source.Dispose();
             }
+        }
+
+        
+        //Task taskF3 = factory.ContinueWhenAll((Task<int>[])tasks, (x) => { });
+        //Task taskF4 = factory.ContinueWhenAll((IEnumerable<Task<int>>)tasks, (x) => {  });
+        //Task taskF5 = factory.ContinueWhenAll(tasks.ToArray(), (x) => { });
+
+        public void CancellationTokenSimple2()
+        {
+            // Define the cancellation token.
+            //CancellationTokenSource source = new CancellationTokenSource();
+            //CancellationToken token = source.Token;
+
+            Task task = new Task(() => { });
+            List<Task> tasks = (task as IList<Task>).ToList();
+            //List<Task<int>> tasks = new List<Task<int>>();
+
+            //TaskFactory factory = new TaskFactory(token);
+            //tasks.Add(factory.StartNew(() =>
+            //{
+            //    source.Cancel();
+            //    return 1;
+            //}, token));
+
+            //try
+            //{
+            //    Task<double> fTask = factory.ContinueWhenAll(tasks.ToArray(),
+            //                                                 (results) => { return 100.0; },
+            //                                                 token);
+            //    var result = fTask.Result;
+            //}
+            //catch (AggregateException ex)
+            //{
+            //}
+            //finally
+            //{
+            //    source.Dispose();
+            //}
         }
 
         //static CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
@@ -282,5 +309,46 @@ namespace ConsoleApp1
         //        }
         //    });
         //}
+		
+		/*
+		https://stackoverflow.com/questions/14455293/how-and-when-to-use-async-and-await
+		
+		
+		Console.WriteLine(DateTime.Now);
+
+		// This block takes 1 second to run because all
+		// 5 tasks are running simultaneously
+		{
+			var a = Task.Delay(1000);
+			var b = Task.Delay(1000);
+			var c = Task.Delay(1000);
+			var d = Task.Delay(1000);
+			var e = Task.Delay(1000);
+
+			await a;
+			await b;
+			await c;
+			await d;
+			await e;
+		}
+
+		Console.WriteLine(DateTime.Now);
+
+		// This block takes 5 seconds to run because each "await"
+		// pauses the code until the task finishes
+		{
+			await Task.Delay(1000);
+			await Task.Delay(1000);
+			await Task.Delay(1000);
+			await Task.Delay(1000);
+			await Task.Delay(1000);
+		}
+		Console.WriteLine(DateTime.Now);
+		OUTPUT:
+
+		5/24/2017 2:22:50 PM
+		5/24/2017 2:22:51 PM (First block took 1 second)
+		5/24/2017 2:22:56 PM (Second block took 5 seconds)		
+		*/
     }
 }

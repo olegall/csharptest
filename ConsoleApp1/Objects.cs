@@ -11,6 +11,8 @@ namespace ConsoleApp1
 
     class Objects
     {
+        public Objects() { }
+
         public  async Task CompareObjects()
         {
             var byte1 = new byte();
@@ -194,6 +196,36 @@ namespace ConsoleApp1
             double myDouble2 = 9.78;
             int myInt2 = (int)myDouble2;
             int myInt2_ = Convert.ToInt32(myDouble2);
+        }
+        #endregion
+
+        #region Передача по ссылке
+        /* 
+         создать объект с одним полем. проинициализовать поле.
+         передать объект в методы вниз по стеку с уровнем вложенности 3. 
+         в последнем методе изменить поле переданного объекта. убедиться, что в изначальном объекте
+         поле изменилось
+         */
+        
+        class RefObj
+        {
+            public int Foo { get; set; }
+        }
+
+        RefObj oInit = new RefObj { Foo = 1 };
+
+        void RefMethod1(RefObj o) => RefMethod2(o);
+        void RefMethod2(RefObj o) => RefMethod3(o);
+        void RefMethod3(RefObj o)
+        {
+            o.Foo = 0;
+            Console.WriteLine($"*** oInit Foo final (should be 0) {oInit.Foo} ***");
+        }
+
+        public void DoRefObj()
+        {
+            Console.WriteLine($"*** oInit Foo init (should be 1) {oInit.Foo} ***");
+            RefMethod1(oInit);
         }
         #endregion
 

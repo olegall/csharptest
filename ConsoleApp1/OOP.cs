@@ -6,6 +6,13 @@ namespace ConsoleApp1
 {
     public class OOP
     {
+        private readonly string subcaption;
+
+        public OOP(string subcaption)
+        {
+            this.subcaption = subcaption;
+        }
+
         public class Person
         {
             public string Name { get; set; }
@@ -624,10 +631,10 @@ namespace ConsoleApp1
 
             BaseClass A = (BaseClass)B;
             A.DoWork();  // Calls the old method.
-            Console.WriteLine("-------------------------");
+            Console.WriteLine(subcaption);
             B.DoWork2(); // переопределённый метод
             A.DoWork2(); // переопределённый метод
-            Console.WriteLine("-------------------------");
+            Console.WriteLine(subcaption);
             BaseClass C = new DerivedClass2();
             B.DoWork3();
             A.DoWork3();
