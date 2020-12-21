@@ -157,11 +157,28 @@ namespace ConsoleApp1
             }
         }
 
-        public void Finally()
+        public void TryCatchFinally()
         {
             try
             {
                 var a = arr[10];
+                throw new Exception();
+            }
+            catch
+            {
+                // почему тут нельзя освободить ресурсы?
+            }
+            finally
+            {
+                // корректное освобождение ресурсов
+            }
+        }
+
+        public void TryCatchFinallyException()
+        {
+            try
+            {
+                throw new Exception();
             }
             catch
             {

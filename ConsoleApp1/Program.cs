@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +27,10 @@ namespace ConsoleApp1
 
         static OOP OOP = new OOP(SUB_CAPTION);
         static Keywords keywords = new Keywords(SUB_CAPTION);
+        static LINQ LINQ = new LINQ();
+        static DelegatesLambda delegatesLambda = new DelegatesLambda();
+        static Exceptions exceptions = new Exceptions();
+        static Common common = new Common();
 
         static void Main(string[] args)
         {
@@ -247,7 +250,7 @@ namespace ConsoleApp1
             #region OOP
             Console.WriteLine($"{CAPTION_BEGIN} OOP {CAPTION_END}");
 
-            #region
+
             int value = 10;
             A16 a16 = new A16();
             B16 b16 = new B16();
@@ -257,6 +260,21 @@ namespace ConsoleApp1
             a17.GetValue(value);
             OOP.Ex1();
             OOP.Ex2();
+            OOP.UpcastingDowncasting();
+
+            // Static
+            InstanceClassStaticConstructor ICSC;
+            new InstanceClassStaticConstructor();
+            //StaticClassStaticConstructor SCSC; // не удаётся объявить переменную статического типа
+            //new StaticClassStaticConstructor(); // не удаётся создать экземпляр статического класса
+            StaticClassStaticConstructor.foo = 100;
+            StaticClassStaticConstructor.GetFoo();
+
+            // Strings
+            var strings = new Strings();
+            strings.TestEquality();
+            strings.TestEquality2();
+            strings.TestIntern();
             #endregion
 
             #region
@@ -266,7 +284,7 @@ namespace ConsoleApp1
             b18.MethodA();
             #endregion
 
-            #region
+            #region OOP
             Console.WriteLine(SUB_CAPTION);
             int i2 = 10;
             string s2 = "HelloWorld";
@@ -279,6 +297,8 @@ namespace ConsoleApp1
             // строка не меняется
             OOP.ModifyString(s2);
             Console.WriteLine("s = " + s2);
+
+            new Square();
             #endregion
 
             #region
@@ -296,20 +316,21 @@ namespace ConsoleApp1
             c21.Print();
             #endregion
 
-            #endregion
-
             #region LINQ
             Console.WriteLine($"{CAPTION_BEGIN} LINQ {CAPTION_END}");
-            new LINQ().Ex1();
-            new LINQ().Ex2();
-            new LINQ().Ex3();
-            new LINQ().Ex4();
+            LINQ . Ex1(); // так можно
+            LINQ.Ex2();
+            LINQ.Ex3();
+            LINQ.Ex4();
+            LINQ.LazyInitialization();
+            LINQ.LINQ1();
             #endregion
 
             #region DELEGATES
             Console.WriteLine($"{CAPTION_BEGIN} DELEGATES LAMBDA {CAPTION_END}");
-            new DelegatesLambda().Ex1();
-            new DelegatesLambda().Ex3();
+            delegatesLambda.Ex1();
+            delegatesLambda.Ex3();
+            delegatesLambda.TestFunc();
             #endregion
 
             #region OBJECTS
@@ -328,22 +349,23 @@ namespace ConsoleApp1
             Console.WriteLine($"{CAPTION_BEGIN} EXCEPTIONS {CAPTION_END}");
             //new Exceptions().Ex1();
             //new Exceptions().Ex2();
-            //var exc_ex3 = new Exceptions().Ex3();
-            //Exceptions.TestThrow();
-            //new Exceptions().Ex4();
-            new Exceptions().Ex5();
+            //var exc_ex3 = exceptions().Ex3();
+            //exceptions.TestThrow();
+            //exceptions.Ex4();
+            exceptions.Ex5();
+            exceptions.TryCatchFinally();
             #endregion
 
             #region COMMON
             Console.WriteLine($"{CAPTION_BEGIN} COMMON {CAPTION_END}");
-            new Common().Ex1();
-            new Common().Ex2();
-            new Common().Ex3();
-            new Common().Ex5();
-            new Common().Ex6();
-            new Common().Ex7();
-            new Common().Ex8();
-            new Common().Nullable();
+            common.Ex1();
+            common.Ex2();
+            common.Ex3();
+            common.Ex5();
+            common.Ex6();
+            common.Ex7();
+            common.Ex8();
+            common.Nullable();
             #endregion
 
             #region KEYWORDS
@@ -388,10 +410,16 @@ namespace ConsoleApp1
             new Operators().NullCoalescing();
             #endregion
 
+            #region ASYNC/AWAIT
+            Console.WriteLine($"{CAPTION_BEGIN} ASYNC/AWAIT {CAPTION_END}");
+            AsyncAwait.Process();
+            Console.WriteLine("C");
+            #endregion
+
             Console.ReadKey();
         }
 
-        #region Async Await
+        #region ASYNC/AWAIT
         static async Task MainAsync(string[] args)
         {
             await Delay1Async();
@@ -409,7 +437,9 @@ namespace ConsoleApp1
             Console.WriteLine(result);
             result = await SaySomething2();
             Console.WriteLine(result);
+
         }
+    
 
         public static async Task Delay1Async()
         {

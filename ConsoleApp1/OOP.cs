@@ -13,6 +13,8 @@ namespace ConsoleApp1
             this.subcaption = subcaption;
         }
 
+        // проиллюстрировать копирование объекта по ссылке и их равенство/неравенство после этого
+
         public class Person
         {
             public string Name { get; set; }
@@ -106,37 +108,89 @@ namespace ConsoleApp1
             }
         }
 
-        #region Abstract
-        abstract class Shape
+        #region ABSTRACT
+        public abstract class Abstract // можно назвать Abstract
         {
-            // не может быть реализации
-            public abstract int GetArea();
-
-            void Foo()
+            public Abstract() // сработает, для наследников
             {
-                Console.WriteLine();
-                Console.WriteLine();
+            }
+
+            public abstract int GetAreaAbstract(); // нельзя тело, д.б. public
+
+            public virtual int GetAreaOverride() // д.б. тело
+            {
+                return 0;
+            }
+
+            public int FooProp { get; set; } // м.б. свойство
+
+            public abstract int FooPropAbstract { get; set; } // м.б. свойство
+
+            int fooField { get; set; } // м.б. поле
+
+            void Foo() // м.б. метод с реализацией
+            {
             }
         }
 
-        class Square : Shape
+        public class Square : Abstract
         {
-            int side;
+            // д.б. переопределённый GetArea
+            public override int GetAreaAbstract() // д.б. public
+            {
+                return 100;
+            }
 
-            public Square(int n) => side = n;
+            public override int GetAreaOverride() // д.б. public
+            {
+                return 100;
+            }
 
-            // GetArea method is required to avoid a compile-time error.
-            public override int GetArea() => side * side;
+            public override int FooPropAbstract
+            {
+                get
+                {
+                    return 0;
+                }
+                set
+                {
+                }
+            }
+        }
 
-            //static void Main()
-            //{
-            //    var sq = new Square(12);
-            //    Console.WriteLine($"Area of the square = {sq.GetArea()}");
-            //}
+        abstract class Abstract2
+        {
+            abstract public int Foo();
+        }
+
+        abstract class Abstract3
+        {
+            // public int Foo(); // д.б. abstract раз нет тела
+        }
+
+        class Abstract4 // д.б. abstract раз есть абстрактный метод
+        {
+            //abstract public int Foo();
+        }
+
+        abstract class Abstract5
+        {
+        }
+
+        interface I
+        {
+            void M();
+        }
+
+        abstract class C : I
+        {
+            public abstract void M();
+        }
+
+        abstract class DerivaedFromClass : A // абстрактный класс может наследоваться от обычного
+        {
         }
         #endregion
-
- 
 
         /// <summary>
         /// В ходе выполнения данного кода генерируется исключение при вызове метода Sort()
@@ -183,17 +237,17 @@ namespace ConsoleApp1
 
         public class Base
         {
-            public String className = "Base";
+            public string className = "Base";
         }
 
         public class Derived1 : Base
         {
-            private String className = "Derived1";
+            private string className = "Derived1";
         }
 
         public class Derived2 : Base
         {
-            public String className = "Derived2";
+            public string className = "Derived2";
         }
 
 
@@ -779,7 +833,6 @@ namespace ConsoleApp1
         }
         #endregion
 
-
         #region BASE
         public class A22
         {
@@ -834,6 +887,148 @@ namespace ConsoleApp1
         class A24
         {
             A24 Foo { get; set; }
+        }
+        #endregion
+
+        #region STATIC
+        static class Static { } // можно так назвать
+        private static class PrivateStatic { } // можно private
+        public static class PublicStatic { } // можно public
+        protected static class ProtectedStatic { } // можно protected
+        static class StaticDerivedFromObject : object { } // можно наследовать от объекта
+        //static class StaticDerivedFromStatic : StaticBase {} // нельзя наследовать от статического
+        //static class StaticDerivedFromInstance : A { } // нельзя наследовать от экземплярного
+        //static class StaticDerivedFromInterface : Inner { } // нельзя наследовать от интерфейса
+
+        // InstanceClassStaticConstructor ICSC - никакой конструктор не вызовется;
+        // new InstanceClassStaticConstructor() - вызывается сначала статический, потом экземплярный конструктор
+        public class InstanceClassStaticConstructor
+        {
+            // Static variable that must be initialized at run time.
+            static readonly long baseline;
+
+            // Static constructor is called at most one time, before any
+            // instance constructor is invoked or member is accessed.
+            static InstanceClassStaticConstructor()
+            {
+                baseline = DateTime.Now.Ticks;
+            }
+
+            public InstanceClassStaticConstructor()
+            {
+            }
+        }
+
+        // StaticClassStaticConstructor.foo = 100; // сработает статический конструктор. foo не проиниц-ся
+        // StaticClassStaticConstructor.GetFoo(); // foo к этому моменту уже проиниц-ся
+        public static class StaticClassStaticConstructor
+        {
+            // Static variable that must be initialized at run time.
+            public static int foo;
+
+            // Static constructor is called at most one time, before any
+            // instance constructor is invoked or member is accessed.
+            static StaticClassStaticConstructor()
+            {
+                
+            }
+
+            public static int GetFoo()
+            {
+                return foo;
+            }
+
+            //public StaticClassStaticConstructor() // нельзя
+            //{
+            //}
+        }
+
+        #endregion
+
+        #region STRINGS
+        public class Strings
+        {
+            public void TestEquality()
+            {
+                string s1 = "foo";
+                string s2 = s1;
+                string s3 = "foo";
+                string s4 = "bar";
+                var a1 = s1 == s2; // по ссылке
+                var a2 = s1 == s4; 
+                var a3 = s1 == s3; 
+                var a4 = s1.Equals(s2); // по значению
+                var a5 = Object.ReferenceEquals(s1, s2); // по ссылке
+                var a6 = Object.ReferenceEquals(s1, s3); // по ссылке
+                var a7 = Object.ReferenceEquals(s1, s4); // по ссылке
+            }
+
+            public void TestEquality2()
+            {
+                string hello = "hello";
+                string helloWorld = "hello world";
+                string helloWorld2 = hello + " world";
+
+                var a1 = helloWorld;
+                var a2 = helloWorld2;
+                var a3 = helloWorld == helloWorld2; // по значению true
+                var a4 = object.ReferenceEquals(helloWorld, helloWorld2); // по ссылке false
+                helloWorld = helloWorld2;
+                var a5 = object.ReferenceEquals(helloWorld, helloWorld2); // ссылке true
+            }
+
+            public void TestIntern()
+            {
+                string hello = "hello";
+                string helloWorld = "hello world";
+                string helloWorld2 = hello + " world";
+
+                var a1 = helloWorld;
+                var a2 = helloWorld2;
+                var a3 = helloWorld == helloWorld2; // по значению true
+                var a4 = object.ReferenceEquals(helloWorld, helloWorld2); // по ссылке false
+                helloWorld2 = "hello world"; // вроде как смысла нет, т.к. string helloWorld2 = hello + " world"; - тем не менее влияет
+
+                // сработало интернирование. приравняли ко 2-й ссылки то же значение, что и для первой, а сами ссылки не приравнивали. 
+                // Несмотря на это проверка по ссылкам true. то true
+                var a5 = object.ReferenceEquals(helloWorld, helloWorld2);
+            }
+        }
+        #endregion
+
+        #region UPCASTING/DOWNCASTING
+        class Person_
+        {
+        }
+
+        class PersonWithId_ : Person_
+        {
+        }
+        
+        public void UpcastingDowncasting()
+        {
+            Person_ p = new Person_();
+            PersonWithId_ pId = new PersonWithId_();
+            Person_ pCast = (Person_)pId; // upcasting - от специфичного к базовому - без приведения
+            try
+            {
+                PersonWithId_ pIdCast = (PersonWithId_)p; // downcasting - от базового к специфичному - с приведением
+                                                          // без приведения будет ошибка
+            }
+            catch (InvalidCastException e) // будет эксепшн
+            {
+
+            }
+
+            p = pId;
+            try
+            {
+                PersonWithId_ pIdCast = (PersonWithId_)p; 
+            }
+            catch (InvalidCastException e) // не будет эксепшна
+            {
+
+            }
         }
         #endregion
     }

@@ -102,5 +102,31 @@ namespace ConsoleApp1
             // нельзя типизировать анонимный тип
             var query8 = ints.Select(int_ => new { int_ });
         }
+
+        /// <summary>
+        /// Отложенная инициализация
+        /// Сколько раз выполниться Where, если t - IEnumerable? IQueryable?
+        /// Ответ: 2 раза
+        /// </summary>
+        public void LazyInitialization()
+        {
+            var t = Enumerable.Range(1, 1000).Where(z => z % 3 == 0);
+            t.Count();
+            t.Any();
+        }
+
+        /// <summary>
+        /// Что будет в переменной result? Какой тип у переменной q?
+        /// Ответ: 15. запрос сработает когда ToList()
+        /// </summary>
+        public void LINQ1()
+        {
+            var list = new List<int>();
+            var q = list.Where(x => x > 10).Where(x => x < 20);
+            list.Add(5);
+            list.Add(15);
+            list.Add(25);
+            var result = q.ToList();
+        }
     }
 }

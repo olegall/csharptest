@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
@@ -13,6 +9,8 @@ namespace ConsoleApp1
     
     async delegate
     
+    передать Action в качестве параметра
+    Foo(Action a) - видимо передаётся тело метода, анонимный метод
     */
 
     class DelegatesLambda
@@ -41,7 +39,6 @@ namespace ConsoleApp1
             //object o3 = delegate () { return 0; };
             //Delegate d = delegate () { return 0; };
         }
-
 
         int Sum(int a, int b) => a + b;
         void InterVoid(int a) => Console.WriteLine(a);
@@ -75,6 +72,16 @@ namespace ConsoleApp1
         {
             var res1 = del(11);
             var res2 = del.Invoke(22);
+        }
+
+        public void TestFunc()
+        {
+            var t = 0;
+            Func<int, int> f = x => { t += x; return t; };
+            t = 1;
+            var a1 = f(1); // 2
+            var a2 = f(2); // 4
+            var a3 = f(3); // 7
         }
     }
 }

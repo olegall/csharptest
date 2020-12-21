@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
@@ -94,6 +90,65 @@ namespace ConsoleApp1
             object obj = null;
 
         }
-        
+
+        #region PROPERTIES
+        int Prop1 // свойства могут не иметь геттера
+        {
+            set
+            {
+                value = 1; // что тут происходит?
+            }
+        }
+
+        int Prop2 // свойства могут не иметь сеттера
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
+        static private int fooProp3; // м.б. поле static, свойство не static
+        int Prop3
+        {
+            set
+            {
+                fooProp3 = value;
+            }
+            get
+            {
+                return fooProp3;
+            }
+        }
+
+        static private int fooProp4; // м.б. поле, свойство static
+        static int Prop4
+        {
+            set
+            {
+                fooProp4 = value;
+            }
+            get
+            {
+                return fooProp4;
+            }
+        }
+
+        private int fooProp5; // м.б. поле, свойство static
+        static int Prop5
+        {
+            set
+            {
+                //fooProp5 = value; // для нестатического поля, метода или св-ва требуется ссылка на объект
+            }
+            get
+            {
+                //return fooProp5; // для нестатического поля, метода или св-ва требуется ссылка на объект
+                return 0;
+            }
+        }
+        #endregion
+
+
     }
 }

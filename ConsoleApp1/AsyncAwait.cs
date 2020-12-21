@@ -309,8 +309,8 @@ namespace ConsoleApp1
         //        }
         //    });
         //}
-		
-		/*
+
+        /*
 		https://stackoverflow.com/questions/14455293/how-and-when-to-use-async-and-await
 		
 		
@@ -350,5 +350,12 @@ namespace ConsoleApp1
 		5/24/2017 2:22:51 PM (First block took 1 second)
 		5/24/2017 2:22:56 PM (Second block took 5 seconds)		
 		*/
+
+        public static async Task Process()
+        {
+            Console.WriteLine("A");
+            await Task.Delay(1000);
+            Console.WriteLine("B");
+        }
     }
 }
