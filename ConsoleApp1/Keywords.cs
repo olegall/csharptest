@@ -24,11 +24,10 @@ namespace ConsoleApp1
 
     public class Keywords
     {
-        private readonly string subcaption;
-
-        public Keywords(string subcaption)
+        public Keywords()
         {
-            this.subcaption = subcaption;
+            int readonlyArgument = 44;
+            InArgExample(readonlyArgument);
         }
 
         #region As
@@ -227,8 +226,6 @@ namespace ConsoleApp1
             baseC.Foo();
             derivedC.Foo();
             
-            Console.WriteLine(subcaption);
-
             baseC = new DerivedC();
             Console.WriteLine(baseC.x);
             Console.WriteLine(derivedC.x);
@@ -439,5 +436,68 @@ namespace ConsoleApp1
         }
         #endregion
 
+        #region OUT REF IN
+        public void OutArgExample(out int number) // out arguments must be modified by the called method
+        {
+            number = 44; // обязательно присвоить. ошибка
+        }
+
+        public void RefArgExample(ref int number) // ref arguments may be modified
+        {
+            number = 10; // не обязательно присваивать
+        }
+
+        class CS0663_Example
+        {
+            // Compiler error CS0663: "Cannot define overloaded
+            // methods that differ only on ref and out".
+            public void SampleMethod(out int i) { i = 0; }
+            //public void SampleMethod(ref int i) { }
+        }
+
+        class RefOverloadExample
+        {
+            public void SampleMethod(int i) { }
+            public void SampleMethod(ref int i) { }
+        }
+
+        class OutOverloadExample
+        {
+            public void SampleMethod(int i) { }
+            public void SampleMethod(out int i) { i = 0; }
+        }
+
+        class Product
+        {
+            public Product(string name, int newID)
+            {
+                ItemName = name;
+                ItemID = newID;
+            }
+
+            public string ItemName { get; set; }
+            public int ItemID { get; set; }
+        }
+
+        /// <summary>
+        /// Какой смысл так делать, если и так ссылочный тип
+        /// </summary>
+        /// <param name="itemRef"></param>
+        private static void ChangeByReference(ref Product itemRef)
+        {
+            // Change the address that is stored in the itemRef parameter.
+            itemRef = new Product("Stapler", 99999);
+
+            // You can change the value of one of the properties of
+            // itemRef. The change happens to item in Main as well.
+            itemRef.ItemID = 12345;
+        }
+
+        public void InArgExample(/*in*/ int number) // возможность "Ссылки только для чтения недоступна для в C# 7.0. Используйте версию 7.2 или более позднюю"
+        {
+            // Uncomment the following line to see error CS8331
+            //number = 19;
+        }
+        #endregion
     }
 }

@@ -1,9 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
+    class MyClass 
+    {
+        public int Num;
+    }
+
     class Common
     {
+        public void Main() 
+        {
+            //var obj = null; // нельзя - не типизирована
+            object obj = null;
+
+            object a1 = (string)null;
+
+
+            #region Типы данных
+            DateTime time = new DateTime();
+            /* оператор == будет передавать свои операнды в разные допустимые типы,
+             * чтобы получить общий тип, который он может затем сравнить */
+            if (time == null)
+            {
+                /* do something */
+            }
+            #endregion
+        }
+
         // нельзя в классе, структуре и интерфейсе
         //try 
         //{
@@ -88,7 +113,6 @@ namespace ConsoleApp1
         {
             //var obj = null; // нельзя - не типизирована
             object obj = null;
-
         }
 
         #region PROPERTIES
@@ -108,47 +132,189 @@ namespace ConsoleApp1
             }
         }
 
-        static private int fooProp3; // м.б. поле static, свойство не static
-        int Prop3
+        static private int staticField; 
+
+        int Prop3 // м.б. поле static, свойство не static
         {
             set
             {
-                fooProp3 = value;
+                staticField = value;
             }
+
             get
             {
-                return fooProp3;
+                return staticField;
             }
         }
 
-        static private int fooProp4; // м.б. поле, свойство static
-        static int Prop4
+        static int Prop4 // м.б. поле, свойство static
         {
             set
             {
-                fooProp4 = value;
+                staticField = value;
             }
+
             get
             {
-                return fooProp4;
+                return staticField;
             }
         }
 
-        private int fooProp5; // м.б. поле, свойство static
+        private int field;
         static int Prop5
         {
             set
             {
-                //fooProp5 = value; // для нестатического поля, метода или св-ва требуется ссылка на объект
+                //field = value; // для нестатического поля, метода или св-ва требуется ссылка на объект
             }
+
             get
             {
-                //return fooProp5; // для нестатического поля, метода или св-ва требуется ссылка на объект
+                //return field; // для нестатического поля, метода или св-ва требуется ссылка на объект
                 return 0;
+            }
+        }
+
+        //public abstract int Prop6
+        //{
+        //get // не может объявить тело, потомучто помечен как abstract
+        //{
+        //    return 0;
+        //}
+        //}
+
+        public int[] Prop7 // может иметь тип массива
+        { 
+            get
+            {
+                return new[]{0};
             }
         }
         #endregion
 
+        #region КОВАРИАНТНОСТЬ КОНРВАРИАНТНОСТЬ
 
+        static object GetObject() { return null; }
+        static void SetObject(object obj) { }
+
+        static string GetString() { return ""; }
+        static void SetString(string str) { }
+
+        public void CovarianceContravariance()
+        {
+            object[] array = new String[10];
+            // The following statement produces a run-time exception.  
+            array[0] = 10;
+
+            // Covariance. A delegate specifies a return type as object,  
+            // but you can assign a method that returns a string.  
+            Func<object> del = GetString;
+
+            // Contravariance. A delegate specifies a parameter type as string,  
+            // but you can assign a method that takes an object.  
+            Action<string> del2 = SetObject;
+        }
+
+        class Account
+        {
+            public virtual void DoTransfer(int sum)
+            {
+            }
+        }
+        
+        class DepositAccount : Account
+        {
+            public override void DoTransfer(int sum)
+            {
+            }
+        }
+
+        interface IBank<out T>
+        {
+            T CreateAccount(int sum);
+        }
+
+        class Bank<T> : IBank<T> where T : Account, new()
+        {
+            public T CreateAccount(int sum)
+            {
+                T acc = new T();
+                return acc;
+            }
+        }
+
+
+        public void CovarianceContravarianceMetanit()
+        {
+            IBank<Account> ordinaryBank = new Bank<DepositAccount>(); // д.б. out T
+
+            IBank<DepositAccount> depositBank = new Bank<DepositAccount>();
+            IBank<Account> ordinaryBank3 = depositBank; // д.б. out T
+
+            //IBank<DepositAccount> depositBank2 = new Bank<Account>(); // нельзя преобразовать тип
+        }
+        #endregion
+
+        #region КОВАРИАНТНОСТЬ МОЯ
+        class Acc
+        {
+        }
+        class DepositAcc : Acc
+        {
+        }
+        interface IBankVoid<out T>
+        {
+            void CreateAccount(int sum);
+        }
+        class BankNoRestrictions<T> : IBankVoid<T>
+        {
+            public void CreateAccount(int sum)
+            {
+            }
+        }
+        public void CovarianceMy()
+        {
+            //DepositAccount da = new Account();
+            Acc ad = new DepositAcc(); // базовый класс видит всех наследников
+            
+            // сигнатуры дженерик классов и классы, которыми типизируем - разные
+            IBankVoid<Acc> ordinaryBank2 = new BankNoRestrictions<DepositAcc>(); // д.б. out T
+        }
+        #endregion
+
+        #region КОНТРВАРИАНТНОСТЬ МОЯ
+        interface IBankVoidContr<in T>
+        {
+            void CreateAccount(int sum);
+        }
+        class BankNoRestrictionsContr<T> : IBankVoidContr<T>
+        {
+            public void CreateAccount(int sum)
+            {
+            }
+        }
+        public void ContrvarianceMy()
+        {
+            //DepositAccount da = new Account();
+            Acc ad = new DepositAcc(); // базовый класс видит всех наследников
+
+            // сигнатуры дженерик классов и классы, которыми типизируем - разные
+            IBankVoidContr<DepositAcc> ordinaryBank2 = new BankNoRestrictionsContr<Acc>(); // д.б. in T
+        }
+        #endregion
+
+        #region VARIANCE CONTRAVARIANCE MICROSOFT
+        class Base { }
+        class Derived : Base { }
+        
+        void ConvarianceMicrosoft()
+        {
+            IEnumerable<Derived> d = new List<Derived>(); // IEnumerable уже ковариантный
+            IEnumerable<Base> b = d;
+
+            IEnumerable<Base> b2 = new List<Base>(); // IEnumerable уже ковариантный
+            // IEnumerable<Derived> d2 = b2; // не удаётся преобразовать
+        }
+        #endregion
     }
 }

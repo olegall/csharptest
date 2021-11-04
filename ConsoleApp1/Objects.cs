@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Net;
+using System.Linq;
 
 namespace ConsoleApp1
 {
@@ -61,32 +62,46 @@ namespace ConsoleApp1
         public void Ex1()
         {
             var user1 = new User("Oleg");
-            var user2 = new User("Oleg");
+            var user2 = new User("Oleg"); // как сделать чтобы они были равны?
             var user3 = new User("Alex");
 
             var res1 = ReferenceEquals(user1, user1);
             var res2 = ReferenceEquals(user1, user2);
-            user2 = user1;
+            //user2 = user1;
             var res3 = ReferenceEquals(user1, user2);
             var res4 = ReferenceEquals(user1, user3);
-            
+
             // при передаче произойдёт упаковка значимых типов и ссылки на них будут разные
             var res5 = ReferenceEquals(1, 1);
             var res6 = ReferenceEquals(1, 2);
 
             var res7 = ReferenceEquals(null, null);
-                                                // требует using.System
+            // требует using.System
             var res8 = ReferenceEquals(null, new Object());
             var res9 = ReferenceEquals(null, new object());
 
             var res10 = Equals(user1, user2);
             var res11 = Equals(user1, user3);
-            var res12 = Equals(1, 1);
-            var res13 = Equals(1, 2);
+            var res12 = Equals(user2, user3);
+            var res13 = Equals(1, 1);
+            var res14 = Equals(1, 2);
+            var res15 = user1 == user2;
+            var res16 = user1 == user3;
+            var res17 = user1.Equals(user1);
+            var res18 = user1.Equals(user2);
+            var res19 = user1.Equals(user3);
+            var res20 = user1.Equals(user3);
+            
+            object o1 = 5, o2 = 5;
+            bool eq = (o1 == o2); // false
+            bool eq2 = o1.Equals(o2); // true
 
-            var res14 = user1.Equals(user1);
-            var res15 = user1.Equals(user2);
-            var res16 = user1.Equals(user3);
+            var users = new[] { new User("Oleg1"), new User("Oleg2"), new User("Oleg3") };
+            foreach (var user in users) 
+            {
+                var a1 = user == users.First();
+                var a2 = user.Equals(users.First());
+            }
         }
 
         public class Name
@@ -154,9 +169,21 @@ namespace ConsoleApp1
         }
 
         #region Casting
-        class Foo { }
-        class Animal { }
-        class Giraffe : Animal { }
+        class Foo 
+        {
+        }
+        
+        class Animal 
+        {
+        }
+        
+        class Giraffe : Animal 
+        {
+        }
+        
+        class Giraffe_
+        {
+        }
 
         public void Ex3()
         {
@@ -171,19 +198,16 @@ namespace ConsoleApp1
             var res6 = (object)new String('a', 1);
             string res7 = (string)new String('a', 1);
 
-
-
-
             Giraffe g = new Giraffe();
 
             // Implicit conversion to base type is safe.  
             Animal a = g;
-            Foo f = new Foo();
 
             // Explicit conversion is required to cast back  
             // to derived type. Note: This will compile but will  
             // throw an exception at run time if the right-side  
             // object is not in fact a Giraffe.  
+            // как  добиться исключения?
             Giraffe g2 = (Giraffe)a;
 
             // Implicit Casting(automatically) - converting a smaller type to a larger type size

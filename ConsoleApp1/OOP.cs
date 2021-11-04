@@ -8,81 +8,114 @@ namespace ConsoleApp1
     {
         private readonly string subcaption;
 
-        public OOP(string subcaption)
-        {
-            this.subcaption = subcaption;
-        }
-
         // проиллюстрировать копирование объекта по ссылке и их равенство/неравенство после этого
 
+        #region Сокрытие virtual override new полиморфизм
         public class Person
         {
-            public string Name { get; set; }
-            public Person(string name)
-            {
-                Name = name;
-            }
-            public virtual void Display()
-            {
-                Console.WriteLine(Name);
-            }
-
-            /// <summary>
-            /// Можно не переопределять
-            /// </summary>
-            public virtual void NotOverrided()
+            public virtual void VirtualOverride() // Переопределим. Можно не переопределять
             {
             }
 
-            /// <summary>
-            /// Сокрытие
-            /// </summary>
-            public void Hided()
+            public void Hidden() // сокрытие
             {
             }
 
-            /// <summary>
-            /// Сокрытие
-            /// </summary>
-            public void Hided2()
+            public void HiddenNew() // сокрытие
+            {
+            }
+
+            public virtual void NotOverrided() // Не переопределим. Можно не переопределять
             {
             }
         }
 
         public class Employee : Person
         {
-            public string Company { get; set; }
-            public Employee(string name, string company)
-                : base(name)
-            {
-                Company = company;
-            }
-
-            public override void Display()
+            public override void VirtualOverride()
             {
             }
 
-            public void Hided()
+            #region Скорее всего аналоги
+            public void Hidden() // скрывает наследуемый член
             {
             }
 
-            public new void Hided2()
+            public new void HiddenNew()
             {
+            }
+            #endregion
+        }
+
+        public class ExampleBase
+        {
+            public readonly int x = 10;
+            public const int G = 5;
+        }
+
+        public class ExampleDerived : ExampleBase
+        {
+            public readonly int x = 20;
+            public const int G = 15;
+        }
+
+        public class ExampleDerivedNew : ExampleBase
+        {
+            public new readonly int x = 20;
+            public new const int G = 15;
+        }
+
+        public class A9
+        {
+            public virtual void M()
+            {
+                Console.WriteLine("This is A");
             }
         }
 
+        public class B9 : A9
+        {
+            //public void M()
+            //public virtual void M()
+            //public new void M()
+            public override void M()
+            {
+                Console.WriteLine("This is B");
+            }
+
+            public void M2()
+            {
+                Console.WriteLine("This is B M2");
+                base.M();
+            }
+        }
+        
         public class Animal
         {
-            public void Info() { Console.WriteLine("Animal"); }
-            public virtual void Say() { Console.WriteLine("Nothing to say"); }
+            public void Info() 
+            { 
+                Console.WriteLine("Animal"); 
+            }
+
+            public virtual void Say() 
+            { 
+                Console.WriteLine("Nothing to say"); 
+            }
         }
 
         public class Cat : Animal
         {
+            // 3 варианта: virtual/override, неявное сокрытие, явное сокрытие с new
             public void Info() { Console.WriteLine("Cat"); }
-            // virtual в базовом классе - обязательно
-            // override - не обязательно
+
+            // если есть override - обязательно д.б. virtual
+            // если есть virtual - override может быть, может не быть. если override работает видимо неявное сокрытие
+            // если без override - Say не знают друг о друге в иерархии
+            // с override - Лисков
             public override void Say() { Console.WriteLine("Meow"); }
+            
+            // нельзя, если есть override рядом
+            //public void Say() { Console.WriteLine("Meow"); }
         }
 
         public class Dog : Animal
@@ -90,23 +123,47 @@ namespace ConsoleApp1
             public void Info() { Console.WriteLine("Dog"); }
             public override void Say() { Console.WriteLine("Woof"); }
         }
+        #endregion
 
-
-
-        public class A
+        public class Base3
         {
-            public virtual void Foo()
+            public void Method()
             {
-                Console.WriteLine("Class A");
+                
+            }
+                   // перед void
+            public virtual void MethodVirtualOverride()
+            {
+                
+            }
+
+            public void MethodNew()
+            {
+                
             }
         }
-        public class B : A
+
+        public class Derived3 : Base3
         {
-            public override void Foo()
+            // 3 варианта: virtual/override, неявное сокрытие, явное сокрытие с new
+            public void Method()
             {
-                Console.WriteLine("Class B");
+                
+            }
+                   // перед void
+            public override void  MethodVirtualOverride()
+            {
+                
+            }
+
+            public new void MethodNew()
+            {
+                
             }
         }
+
+        #region BASE
+        #endregion
 
         #region ABSTRACT
         public abstract class Abstract // можно назвать Abstract
@@ -115,9 +172,9 @@ namespace ConsoleApp1
             {
             }
 
-            public abstract int GetAreaAbstract(); // нельзя тело, д.б. public
+            public abstract int GetAreaAbstract(); // нельзя тело, private нельзя, protected можно вирткальные и абстрактные члены не м.б. закрытыми
 
-            public virtual int GetAreaOverride() // д.б. тело
+            public virtual int GetAreaOverride() // д.б. тело. private нельзя, protected можно вирткальные и абстрактные члены не м.б. закрытыми
             {
                 return 0;
             }
@@ -187,153 +244,122 @@ namespace ConsoleApp1
             public abstract void M();
         }
 
+        class A { }
         abstract class DerivaedFromClass : A // абстрактный класс может наследоваться от обычного
         {
         }
         #endregion
 
-        /// <summary>
-        /// В ходе выполнения данного кода генерируется исключение при вызове метода Sort()
-        /// Выберите одно из решений, реализация которого позволит этому коду отработать
-        /// корректно
-        /// </summary>
-        public class A2: IComparable
-        {
-            private int id { get; set; }
-            public A2(int newID)
-            {
-                id = newID;
-            }
-
-            public int CompareTo(object obj)
-            {
-                if (obj == null) return 1;
-
-                A2 a2 = obj as A2;
-                if (a2 != null)
-                    return this.id.CompareTo(a2.id);
-                else
-                    throw new ArgumentException("Object is not a a2");
-            }
-        }
-
-
-
+        #region BaseDerivedMain 
         public class Point
         {
-            public int X { get; set; }
-            public int Y { get; set; }
+            public int x { get; set; }
+            public int y { get; set; }
 
-            public Point(int xVal, int yVal) {
-                X = xVal;
-                Y = yVal;
+            public Point(int xVal, int yVal)
+            {
+                x = xVal;
+                y = yVal;
             }
         }
 
+        public struct PointStruct
+        {
+            public int x { get; set; }
+            public int y { get; set; }
 
-
-
-
+            public PointStruct(int xVal, int yVal)
+            {
+                x = xVal;
+                y = yVal;
+            }
+        }
 
         public class Base
         {
             public string className = "Base";
         }
 
-        public class Derived1 : Base
+        public class DerivedPrivate : Base
         {
-            private string className = "Derived1";
-        }
-
-        public class Derived2 : Base
-        {
-            public string className = "Derived2";
-        }
-
-
-
-        public abstract class B3
-        {
-            // private нельзя
-            // private virtual void Print()
-            
-            // protected можно
-            //protected virtual void Print()
-            
-            public virtual void Print()
+            private string className = "DerivedPrivate";
+            public string ClassName
             {
-                Console.WriteLine("This is B3");
+                get
+                {
+                    return className;
+                }
             }
         }
 
-        public class A3 : B3
+        public class DerivedPublic : Base
         {
-            //public virtual void Print()
-            //public new void Print()
-            private void Print()
-            //public override void Print()
+            public string className = "DerivedPublic";
+        }
+
+        public class DerivedNewPrivate : Base
+        {
+            private new string className = "DerivedNewPrivate"; // нет предупреждения, если new
+            public string ClassName
             {
-                Console.WriteLine("This is A3");
+                get
+                {
+                    return className;
+                }
             }
         }
 
-
-
-
-
-        public class Car
+        public class DerivedNewPublic : Base
         {
-            public Car()
+            public new string className = "DerivedNewPublic";
+        }
+        #endregion
+
+        #region MAIN
+        private class A18
+        {
+            public A18() // д.б. public, т.к. наследник дёргает через base
             {
-                Console.WriteLine("The Car constructor invoked");
             }
         }
-        public class Bus : Car
-        {
-            public Bus()
-            {
-                Console.WriteLine("The Bus constructor invoked");
-            }
 
-            public static void Drive()
+        private class B18 : A18 // работает наследование от приватного класса
+        {
+            B18() : base()
             {
-                Console.WriteLine("The Drive method invoked");
-            }
-            public void Drive2()
-            {
-                Console.WriteLine("The Drive method invoked");
             }
         }
 
 
 
+        class ByteCollection2 : Collection<byte> { }
 
-   
-
-
-
-
-        public class Person2
+        public void ClassEquality()
         {
+            var a1 = typeof(ByteCollection1) == typeof(Collection<byte>); // true - истинный класс. можно удалить, и using вверху
+            var a2 = typeof(Collection<byte>) == typeof(Collection<byte>); // true - истинный класс
+            var a3 = typeof(ByteCollection2) == typeof(Collection<byte>); // false - наследник. тип другой - вот и false (typeof)
         }
 
-        public class Student : Person2
-        {
-        }
+
+
+        public class Person2 { }
+
+        public class Student : Person2 { }
 
         public class C<T>
         {
             public T x;
         }
 
+        protected internal class ProtectedInternal { }
+        internal protected class InternalProtected { }
 
-
-
-
-        class A5
+        class GetterSetter
         {
             private string s;
-            public string S {
+            public string S
+            {
                 get
                 {
                     return s;
@@ -343,19 +369,25 @@ namespace ConsoleApp1
                     s = value;
                 }
             }
-            // Уже объявлен как геттер
-            //public void get_S()
+            //public void get_S() // Уже объявлен как геттер
             //{
             //}
-            //public void set_S()
+            //public void set_S() // Уже объявлен как геттер
             //{
             //}
         }
 
+        class DerivedFromObject : Object
+        {
+        }
 
+        class A24 // Поле класса с типом как сам класс
+        {
+            A24 Foo { get; set; }
+        }
+        #endregion
 
-        
-
+        #region CTOR chain
         public class A6
         {
             public A6() { Console.WriteLine("A created"); }
@@ -363,7 +395,7 @@ namespace ConsoleApp1
 
         public class B6 : A6
         {
-            private B6() { Console.WriteLine("B created"); }
+            public B6() { Console.WriteLine("B created"); }
 
             public B6(string parameter)
             {
@@ -372,123 +404,69 @@ namespace ConsoleApp1
         }
 
         public class C6 : B6
-        {   // base обязательно, если в базовом классе есть конструктор с параметрами
-            public C6() : base("par")
+        {   
+            public C6() : base("par") // base обязательно, если в базовом классе есть конструктор с параметрами
             {
                 Console.WriteLine("C created");
             }
         }
 
+        public class C7 : B6
+        {
+            public C7() : base()
+            {
+                Console.WriteLine("C created");
+            }
+        }
 
+        public class C8 : B6 // эквивалентно C7
+        {
+            public C8()
+            {
+                Console.WriteLine("C created");
+            }
+        }
+        #endregion
 
-
-
+        #region Derived public CTOR
         public class A7
         {
-            
         }
-        // базовый класс д.б. public
-        public class B7 : A7
+        public class B7 : A7 // базовый класс д.б. public, если у наследника public
         {
         }
+        #endregion
 
-
-
-
-
+        #region Type Instance CTOR
         public class Parent
         {
-            static Parent() { Console.WriteLine("Parent Type ctor"); }
-            public Parent() { Console.WriteLine("Parent Instance ctor"); }
+            static Parent()
+            {
+            }
+            public Parent()
+            {
+            }
         }
 
         public class Child : Parent
         {
             public static int field1 = 0;
-            static Child() { Console.WriteLine("Child Type ctor"); }
-            public Child() { Console.WriteLine("Child Instance ctor"); }
+            static Child()
+            {
+            }
+            public Child()
+            {
+            }
             public static void Foo()
             {
             }
         }
+        #endregion
 
-
-
-
-        public class A9
-        {
-            public virtual void M()
-            {
-                Console.WriteLine("This is A");
-            }
-        }
-
-        public class B9 : A9
-        {
-
-            //public void M()
-            //public virtual void M()
-            public new void M()
-            //public override void M()
-            {
-                Console.WriteLine("This is B");
-            }
-        }
-
-
-
-        public class A10
-        {
-            static A10()
-            {
-                Console.WriteLine("Static Hello from A");
-            }
-            public A10()
-            {
-                Console.WriteLine("Hello from A");
-            }
-        }
-
-        public class B10
-        {
-            public static string x = "Hello";
-            static B10()
-            {
-                Console.WriteLine("Static Hello from B");
-            }
-            public B10()
-            {
-                Console.WriteLine("Hello from B");
-            }
-        }
-
-
-
-
-
-        public class A11
-        {
-            public A11()
-            {
-                Console.WriteLine("class A");
-            }
-        }
-
-        public class B11 : A11
-        {
-            public B11()
-            {
-                Console.WriteLine("class B");
-            }
-        }
-
-
-
-
+        #region private class, private CTOR
         private class A12
         {
-            // если конструктор private - не скомпилируется
-            public A12()
+            public A12() // д.б. public
             {
             }
         }
@@ -499,11 +477,9 @@ namespace ConsoleApp1
             {
             }
         }
+        #endregion
 
-
-
-
-
+        #region IS TEST
         public class A13
         {
         }
@@ -512,9 +488,16 @@ namespace ConsoleApp1
         {
         }
 
+        public void IsTest()
+        {
+            var a1 = new A13() is B13;
+            var a2 = new B13() is A13;
+            var a3 = new A13() is A13;
+            var a4 = new B13() is B13;
+        }
+        #endregion
 
-
-
+        #region new 
         public class A14
         {
             public void Method()
@@ -539,9 +522,6 @@ namespace ConsoleApp1
             }
         }
 
-
-
-
         public partial class A15
         {
             // сначала сработает конструктор типа
@@ -558,10 +538,7 @@ namespace ConsoleApp1
                 Console.WriteLine("A created static ctor");
             }
         }
-
-
-
-
+        #endregion
 
         class OuterClass
         {
@@ -593,7 +570,6 @@ namespace ConsoleApp1
             }
         }
 
-
         public class A16
         {
             public virtual void GetValue(int a)
@@ -612,8 +588,6 @@ namespace ConsoleApp1
                 Console.WriteLine("B:GetValue:object a = {0}", a);
             }
         }
-
-
 
         #region Ex1
         private class User
@@ -697,25 +671,28 @@ namespace ConsoleApp1
 
         #endregion
 
-        #region Example
-        public class TypeA
+        #region Outer Inner
+        /// <summary>
+        /// Override корректно работает во вложенном классе
+        /// </summary>
+        public class Outer
         {
-            public class TypeB : TypeA
+            public class Inner : Outer
             {
-                public override void MethodA()
+                public override void A()
                 {
-                    Console.WriteLine("TypeB");
+                    Console.WriteLine("Inner");
                 }
             }
 
-            public virtual void MethodA()
+            public virtual void A()
             {
-                Console.WriteLine("TypeA");
+                Console.WriteLine("Outer");
             }
         }
         #endregion
 
-        #region Example
+        #region By value by reference
         public void ModifyInt(int i)
         {
             i = 99;
@@ -725,116 +702,43 @@ namespace ConsoleApp1
         {
             s = "Hello, I've been modified";
         }
-        #endregion
 
-        #region Example 
-        class A17
+        public class PassByReference
         {
-            static A17()
-            {
-            }
+            public int Foo = 0;
         }
-        class B17 : A17
-        {   
-            // public нельзя
-            static B17() //: base()
-            {            // нельзя т.к. static
-            }
+
+        public void ModifyObject(PassByReference obj)
+        {
+            obj.Foo = 1;
         }
         #endregion
 
-        #region Example
-        /*[private | public]*/
-        class A18
-        {
-            public A18()
-            {
-            }
-        }
-        /*[private | public]*/
-        private class B18 : A18
-        {
-            /*[private | public]*/
-            private B18() : base() // констр A18 д.б. public
-            {
-            }
-        }
-        #endregion
-
-        #region Example
-        public class Clz
-        {
-            /*public*/ static Clz()   // CS0515, remove public keyword  
-            {
-            }
-        }
-        #endregion
-
-        #region Example
-        class ByteCollection2 : Collection<byte> { }
-        public void Ex3()
-        {
-            // это истинный класс, поэтому равны
-            Console.WriteLine(typeof(ByteCollection1) == typeof(Collection<byte>));
-            // это наследник, поэтому не равны
-            Console.WriteLine(typeof(ByteCollection2) == typeof(Collection<byte>));
-        }
-        #endregion
-
-        #region Example
-        class A19 { }
+        #region STRUCT
         interface Inner { }
-        struct S : //A19,
-                   Inner
+        enum E1 { One, Two }
+        struct S : Inner//, Base, E1 // в списке интерфейсов не является интерфейсом
         {
-            // иниц-ть нельзя
-            //int num = 10;
+            //int num = 10; // в структуре не могут содержаться инициализаторы свойств или полей экземпляров
             public int num2;
             // без параметров нельзя
-            //S() { }
+            //S() { } // структуры не могут сожержать явных конструкторов без параметров
             S(int num2)
             {
                 this.num2 = num2;
             }
-            static S() { }
-        }
-        #endregion
-
-        #region Example
-        protected internal class A20 { }
-        //internal protected class A20 { }
-        #endregion
-
-        #region Example
-        public class A21
-        {
-            public virtual void Print()
+            static S()
             {
-                Console.WriteLine("A::Print");
             }
         }
 
-        public class B21 : A21
+        class InheritsStruct //: S // не может быть производным от запечатанного типа S. в списке интерфейсов не является интерфейсом
         {
-            public override void Print()
-            {
-                Console.WriteLine("B::Print");
-            }
-        }
-
-        public class C21 : A21
-        {
-            //public void Print()
-            public new void Print()
-            {
-                base.Print();
-                Console.WriteLine("C::Print");
-            }
         }
         #endregion
 
         #region BASE
-        public class A22
+        class A22
         {
             public A22()
             {
@@ -844,33 +748,17 @@ namespace ConsoleApp1
             {
             }
         }
-        public class B22 : A22
+        class B22 : A22
         {
-            public B22() : base()
+            B22() : base()
             {
             }
 
-            public B22(string param) : base(param)
+            B22(string param) : base(param)
             {
             }
         }
         #endregion
-
-        #region OBJECT INHERITANCE
-        class A23 : Object
-        {
-        }
-        #endregion
-
-        //enum E1 { One, Two }
-
-        //struct S1 : E1
-        //{
-        //}
-
-        //class A16 : E1, S1
-        //{
-        //}
 
         /*
 		отличия когда асинхронный метод возвращает то void то Task
@@ -883,19 +771,12 @@ namespace ConsoleApp1
 		если объявить задачу или thread в вызывающем методе и там вызвать исключение, то try/catch не обработает
 		*/
 
-        #region Поле класса с типом как сам класс
-        class A24
-        {
-            A24 Foo { get; set; }
-        }
-        #endregion
-
         #region STATIC
         static class Static { } // можно так назвать
         private static class PrivateStatic { } // можно private
         public static class PublicStatic { } // можно public
         protected static class ProtectedStatic { } // можно protected
-        static class StaticDerivedFromObject : object { } // можно наследовать от объекта
+        static class StaticDerivedFromObject : object { } // можно наследовать от Object. почему?
         //static class StaticDerivedFromStatic : StaticBase {} // нельзя наследовать от статического
         //static class StaticDerivedFromInstance : A { } // нельзя наследовать от экземплярного
         //static class StaticDerivedFromInterface : Inner { } // нельзя наследовать от интерфейса
@@ -904,16 +785,11 @@ namespace ConsoleApp1
         // new InstanceClassStaticConstructor() - вызывается сначала статический, потом экземплярный конструктор
         public class InstanceClassStaticConstructor
         {
-            // Static variable that must be initialized at run time.
-            static readonly long baseline;
-
-            // Static constructor is called at most one time, before any
-            // instance constructor is invoked or member is accessed.
-            static InstanceClassStaticConstructor()
+            static readonly long baseline; // Static variable that must be initialized at run time.
+            static InstanceClassStaticConstructor() // Вызывается 1 раз. Static constructor is called at most one time, before any instance constructor is invoked or member is accessed.
             {
                 baseline = DateTime.Now.Ticks;
             }
-
             public InstanceClassStaticConstructor()
             {
             }
@@ -923,26 +799,96 @@ namespace ConsoleApp1
         // StaticClassStaticConstructor.GetFoo(); // foo к этому моменту уже проиниц-ся
         public static class StaticClassStaticConstructor
         {
-            // Static variable that must be initialized at run time.
-            public static int foo;
+            public static int foo; // Static variable that must be initialized at run time. м.б. инициализирована
 
-            // Static constructor is called at most one time, before any
-            // instance constructor is invoked or member is accessed.
-            static StaticClassStaticConstructor()
+            // Static constructor is called at most one time, before any instance constructor is invoked or member is accessed.
+            static StaticClassStaticConstructor() // public нельзя
             {
-                
             }
+            
+            //public StaticClassStaticConstructor() // экземплярный конструктор нельзя
+            //{
+            //}
 
             public static int GetFoo()
             {
                 return foo;
             }
-
-            //public StaticClassStaticConstructor() // нельзя
-            //{
-            //}
         }
 
+        public class A10
+        {
+            static A10()
+            {
+                Console.WriteLine("Static Hello from A");
+            }
+            public A10()
+            {
+                Console.WriteLine("Hello from A");
+            }
+        }
+
+        public class B10
+        {
+            public static string x = "Hello";
+            static B10()
+            {
+                Console.WriteLine("Static Hello from B");
+            }
+            public B10()
+            {
+                Console.WriteLine("Hello from B");
+            }
+        }
+
+        /// <summary>
+        /// Перегрузка по static
+        /// </summary>
+        public class Bus
+        {
+            public static void Drive()
+            {
+            }
+            public void Drive2()
+            {
+            }
+        }
+
+        class A17
+        {
+            static A17()
+            {
+            }
+        }
+        class B17 : A17
+        {
+            // public нельзя. модификаторы доступа для статических конструкторов не разрешены
+            static B17() //: base() // статический конструктор не может иметь явный вызов конструктора "this" или "base"
+            {
+            }
+        }
+        #endregion
+
+        #region CTOR
+        class CTOR
+        {
+            CTOR()
+            {
+
+            }
+
+            CTOR(int a)
+            {
+
+            }
+            
+            // статический к-р не д. иметь параметров
+            // модификаторы доступа для статических к-в не разрешены
+            static CTOR() 
+            {
+
+            }
+        }
         #endregion
 
         #region STRINGS
@@ -1025,10 +971,70 @@ namespace ConsoleApp1
             {
                 PersonWithId_ pIdCast = (PersonWithId_)p; 
             }
-            catch (InvalidCastException e) // не будет эксепшна
+            catch (InvalidCastException e) // не будет эксепшна, т.к. p = pId;
             {
 
             }
+        }
+        #endregion
+
+        #region Check Type
+        public interface IFoo
+        {
+        }
+
+        public class Foo1 : IFoo
+        {
+        }
+
+        public class Foo2 : IFoo
+        {
+        }
+
+        public class Foo3 : IFoo
+        {
+        }
+
+        /// <summary>
+        /// Type pattern
+        /// </summary>
+        public void CheckType1(IFoo foo)
+        {
+            /*switch(foo is IFoo) {
+                case Foo1: break;
+            }*/
+            switch (foo)
+            {
+                case Foo1 _:
+                    break;
+                case Foo2 _:
+                    break;
+                case Foo3 _:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Reflection
+        /// </summary>
+        /// <param name="foo"></param>
+        public void CheckType2(IFoo foo)
+        {
+            Type t = foo.GetType();
+        }
+
+        public void CheckType3(IFoo foo)
+        {
+            if (foo is Foo1)
+            {
+            }
+            if (foo is Foo2)
+            {
+            }
+            if (foo is Foo3)
+            {
+            }
+            Type a1 = foo.GetType();
         }
         #endregion
     }

@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncAwait.cs" />
+    <Compile Include="BinaryTree.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Generics.cs" />
@@ -55,10 +56,33 @@
     <Compile Include="Operators.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceTypes.cs" />
     <Compile Include="Struct1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Casting\Casting.csproj">
+      <Project>{31e2478e-00d3-4924-b0c8-3af17b81f6b2}</Project>
+      <Name>Casting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataStructures\DataStructures.csproj">
+      <Project>{98632646-be30-40ad-809a-976c0764f940}</Project>
+      <Name>DataStructures</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Multithreading\Multithreading.csproj">
+      <Project>{84236aa4-0d71-4fb9-ad2b-7a18b613aae0}</Project>
+      <Name>Multithreading</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OOP\OOP.csproj">
+      <Project>{0146fc43-780c-4372-b114-768a2c2acbe9}</Project>
+      <Name>OOP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tasks\Tasks.csproj">
+      <Project>{f966a8e0-6e95-4589-9e02-0ea9e1f9c6b3}</Project>
+      <Name>Tasks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

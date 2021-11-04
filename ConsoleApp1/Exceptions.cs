@@ -189,5 +189,27 @@ namespace ConsoleApp1
                 // корректное освобождение ресурсов
             }
         }
+
+        /// <summary>
+        /// Почему нет конфликта имён?
+        /// </summary>
+        void TwoTryCatch()
+        {
+            try
+            {
+                var a = 0;
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                var a = 0;
+            }
+            catch
+            {
+            }
+        }
     }
 }
