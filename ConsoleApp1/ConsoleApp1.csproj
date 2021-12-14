@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnonimousTypes.cs" />
     <Compile Include="AsyncAwait.cs" />
     <Compile Include="BinaryTree.cs" />
     <Compile Include="Common.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceTypes.cs" />
+    <Compile Include="Strings.cs" />
     <Compile Include="Struct1.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +72,18 @@
     <ProjectReference Include="..\DataStructures\DataStructures.csproj">
       <Project>{98632646-be30-40ad-809a-976c0764f940}</Project>
       <Name>DataStructures</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Delegates\Delegates.csproj">
+      <Project>{e76d275e-6213-42a6-98fb-2892eb78321a}</Project>
+      <Name>Delegates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Indexers\Indexers.csproj">
+      <Project>{7d4d1339-8865-4d4f-95fc-a341f86cbd36}</Project>
+      <Name>Indexers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Keywords\Keywords.csproj">
+      <Project>{4517efa3-d46d-47a9-99fa-69e5f88e2174}</Project>
+      <Name>Keywords</Name>
     </ProjectReference>
     <ProjectReference Include="..\Multithreading\Multithreading.csproj">
       <Project>{84236aa4-0d71-4fb9-ad2b-7a18b613aae0}</Project>

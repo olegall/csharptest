@@ -19,18 +19,23 @@ namespace Casting
 
     public class UnSafeCast
     {
-        public static void Main()
+        public void Main()
         {
-            Test(new Reptile()); // ok
+            //Test(new Reptile()); // ok
             //Test(new Animal()); // ошибка
-            //Test(new Mammal()); // ошибка
+            //
+
+            Reptile res1 = (Reptile) new Reptile();
+            //Reptile res2 = (Reptile) new Animal(); // эксепшн в рантайме
+            //Reptile res3 = (Reptile) new Mammal(); // ошибка в дизайн тайме
+            //Cast(new Mammal()); // ошибка в рантайме
 
             // Keep the console window open in debug mode.
             //Console.WriteLine("Press any key to exit.");
             //Console.ReadKey();
         }
 
-        static void Test(Animal a)
+        private void Cast(Animal a)
         {
             // System.InvalidCastException at run time
             // Unable to cast object of type 'Mammal' to type 'Reptile'

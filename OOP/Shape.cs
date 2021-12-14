@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OOP
 {
@@ -9,7 +7,7 @@ namespace OOP
         public const double PI = Math.PI;
         protected double _x, _y;
 
-        public Shape()
+        public Shape() // не нужен
         {
         }
 
@@ -31,7 +29,11 @@ namespace OOP
         {
         }
 
+        // без override или с new вызовется virtual double Area(). площадь будет 0, тк 1 параметр не передастся
+        // отличие new и просто public double Area()?
         public override double Area()
+        // public double Area()
+        // public new double Area()
         {
             return PI * _x * _x;
         }

@@ -4,66 +4,63 @@ using System.Linq;
 
 namespace ConsoleApp1
 {
+    // как увидеть текст SQL запроса? 
+    // передать в select анонимный метод, универсальный метод-делегат или дерево выражения
+    // получение данных из связанных словарей. Сделать навороченные словари, со сложными олбъектами, с транзитивной зависимостью
+    // отложенное выполннение запросы - LINQ lazy loading
+    // немедленное выполнение запроса - ...
+
     class LINQ
     {
-        // как увидеть текст SQL запроса? 
-        // передать в select анонимный метод, универсальный метод-делегат или дерево выражения
-        // получение данных из связанных словарей. Сделать навороченные словари, со сложными олбъектами, с транзитивной зависимостью
         public void Ex1()
         {
             IEnumerable<int> arr = new int[] { 1, 2, 3 };
-
-            // здесь ещё нет массива. Почему в запросе уже есть результат?
-            IEnumerable<int> result1 = arr.Select(x => x * 2);
-            var numQuery = from num in result1 select num;
-
-            foreach (var item in result1)
+            
+            // зачем AsEnumerable, если можно без него?
+            /*IEnumerable<int>*/ int[] resultToArray = arr.Select(x => x)/*.AsEnumerable()*/.ToArray(); // уже есть результат. Немедленное выполнение запроса
+            
+            IEnumerable<int> resultSelect = arr.Select(x => x); // здесь ещё нет массива. Почему в запросе в дебаггере виден результат?
+            var result1Query = from num in resultSelect select num; // эквивалентно предыдущему результату
+            foreach (var item in resultSelect)
             {
-                // есть элементы. Отложенное выполнение запроса
+                // есть элемент в каждой итерации. Отложенное выполнение запроса
             }
 
-            // уже есть массив. Немедленное выполнение запроса
-            IEnumerable<int> result2 = arr.Select(x => x * 2).ToArray();
-
-            IEnumerable<int> result3 = arr.Select(x => x * 2).AsEnumerable();
-
             // результат одинаковый
-            IEnumerable<int> result4 = arr.Select(x => x * 2);
-            IEnumerable<int> result5 = arr.Select(x => x = x * 2).ToArray();
+            IEnumerable<int> resultToArray2 = arr.Select(x => x * 2).ToArray();
+            IEnumerable<int> resultWeirdLambda = arr.Select(x => x = x * 2).ToArray(); // в лямбде странное выражение
         }
 
-        public void Ex2()
+        public void AnonimousType()
         {
             IEnumerable<int> arr = new int[] { 1, 2, 3 };
-            var query = from item in arr select new { Num = item, NumStr = item.ToString() };
+            var query = from item in arr select new { Num = item, NumStr = item.ToString() }; // вернёт анонимный тип. как типизировать?
             var result = query.ToArray();
             var first = query.First();
             var num = first.Num;
             var NumStr = first.NumStr;
         }
 
-        public delegate string Upper(string str);
-        public void Ex3()
+        delegate string Upper(string str); // объявили делегат. в методе объявлять нельзя, только в классе или вне класса в пространстве имён, т.к. это тип
+        
+        public void Delegate()
         {
-            // Declare a Func variable and assign a lambda expression to the  
-            // variable. The method takes a string and converts it to uppercase.
+            // Declare a Func variable and assign a lambda expression to the variable. The method takes a string and converts it to uppercase
             Func<string, string> selector = str => str.ToUpper();
 
-            Upper upper = delegate (string str)
+            Upper upper = delegate (string str) // проинициализировали делегат
             {
                 return str.ToUpper();
             };
 
-
             // Create an array of strings.
             string[] words = { "orange", "apple", "Article", "elephant" };
             // Query the array and select strings according to the selector method.
+            
+            // одинаковые результаты
             IEnumerable<String> res1 = words.Select(selector).ToArray();
             IEnumerable<String> res2 = words.Select(x => x.ToUpper()).ToArray();
-            //IEnumerable<String> res3 = words.Select(upper).ToArray();
-
-            int[] ints = { 1, 2, 3 };
-            IEnumerable<int> res4 = ints.Select<int, int>(x => x).ToArray();
+            //IEnumerable<String> res3 = words.Select(upper).ToArray(); // в Select на вход должен идти только Func
         }
 
         public class Fruit
@@ -81,24 +78,24 @@ namespace ConsoleApp1
         {
             string[] fruits = { "apple", "banana", "mango", "orange", "passionfruit", "grape" };
 
-            var query = fruits.Select((fruit, index) => new { index, str = fruit.Substring(0, index) });
-
             // в анонимном классе new {... поля создаются самми и именуются как параметры: index, fruit
             // IEnumerable
-            var query2 = fruits.Select((fruit, index) => new { index, fruit });
-            var query3 = fruits.Select((fruit, index) => new { fruit, index });
+            IEnumerable<object/*dynamic*/> query1 = fruits.Select((fruit, index) => new { fruit, index }); // явно типизировать
 
             // в анонимном классе переопределили дефолтные названия полей
-            var query4 = fruits.Select((fruit, index) => new { Index = index, Fruit = fruit });
+            var query2 = fruits.Select((fruit, index) => new { Index = index, Fruit = fruit });
 
             // в явном классе инициализируются его поля
-            IEnumerable<Fruit> query5 = fruits.Select((fruit, index) => new Fruit(index, fruit)).ToArray();
+            IEnumerable<Fruit> query3 = fruits.Select((fruit, index) => new Fruit(index, fruit)); // явно типизировать
 
-            int[] ints = { 10, 20, 30 };
-            var query6 = ints.Select((int_, index) => new { index, int_ }).ToArray();
-            IEnumerable<int> query7 = ints.Select(int_ => int_);
-            // нельзя типизировать анонимный тип
-            var query8 = ints.Select(int_ => new { int_ });
+            int a1 = 1;
+            var obj1 = new { a1 }; // обернули объектом, который содержит свойство. как сделать, чтобы содержал private поле?
+            var obj2 = new { int.MaxValue };
+            // var obj3 = new { 1 }; // нельзя
+            // var obj4 = new { new Int16(1) }; // нельзя
+
+            int[] ints = { 1, 2, 3 };
+            var query5 = ints.Select(int_ => new { int_ }); // нельзя типизировать анонимный тип? см. AnonimousTypes
         }
 
         #region Отложенное выполнение/инициализация Lazy
@@ -106,19 +103,21 @@ namespace ConsoleApp1
         {
             string[] teams = { "Бавария", "Боруссия", "Реал Мадрид", "Манчестер Сити", "ПСЖ", "Барселона" };
             
-            IOrderedEnumerable<string> q = from t in teams where t.ToUpper().StartsWith("Б") orderby t select t; // определение и выполнение LINQ-запроса
-            var a1 = q.Count(); //3 // выполнение LINQ-запроса
-            teams[1] = "Ювентус";
-            var a2 = q.Count(); //2 // выполнение LINQ-запроса
+            IOrderedEnumerable<string> query = from t in teams where t.StartsWith("Б") orderby t select t; // определение и выполнение LINQ-запроса
+
+            var res_3 = query.Count(); //3 выполнение LINQ-запроса
+            teams[1] = ""; // query изменился "на лету", хотя мы его не трогали
+            var res_2 = query.Count(); //2 выполнение LINQ-запроса
         }
 
         /// <summary>
         /// Сколько раз выполниться Where, если t - IEnumerable? IQueryable?
         /// Ответ: 2 раза
         /// </summary>
-        public void LazyInitialization()
+        public void Lazy2()
         {
             var t = Enumerable.Range(1, 1000).Where(z => z % 3 == 0);
+            //var t = Enumerable.Range(1, 1000).Where(z => { z % 3 == 0; });
             t.Count();
             t.Any();
         }
@@ -127,7 +126,7 @@ namespace ConsoleApp1
         /// Как изменится q? Какой тип у переменной q?
         /// Ответ: 15. запрос сработает когда ToList()
         /// </summary>
-        public void Lazy2()
+        public void Lazy3()
         {
             var list = new List<int>();
             var q = list.Where(x => x > 10 && x < 20);
@@ -142,49 +141,51 @@ namespace ConsoleApp1
         public void Pagination()
         {
             int[] numbers = { -3, -2, -1, 0, 1, 2, 3 };
-            var a1 = numbers.Skip(4).Take(3);
-            var a2 = numbers.Take(4).Skip(3);
-            var a3 = numbers.Take(4);
+            var a1 = numbers.Skip(4).Take(3); // 1, 2, 3
+            var a2 = numbers.Take(4).Skip(3); // 0
+            var a3 = numbers.Take(4).Skip(4); // перечисление не дало результатов
+            var a4 = numbers.Take(4).Skip(5); // перечисление не дало результатов
+            var a5 = numbers.Take(4); // -3, -2, -1, 0
         }
         #endregion
 
-        public enum VerificationCenterType
-        {
-            /// <summary>
-            /// Пусто
-            /// </summary>
-            None = 0,
-            /// <summary>
-            /// НЭП 
-            /// </summary>
-            NEP = 1,
-            /// <summary>
-            /// КЭП
-            /// </summary>
-            KEP = 2,
-            /// <summary>
-            /// Мобильный ключ (Pay Control)
-            /// </summary>
-            PayControl = 4
-        }
+        public enum Enum { Zero = 0, One = 1, Two = 2, Three = 4 }
 
-        //public void Any() 
-        //{
-        //    var nonBlockedVerificationCenterTypes = new[] { 10, 11, 12 };
-        //    var authorizedUserCryptoprofiles = new[] { 1, 2, 3 };
-        //    var res1 = authorizedUserCryptoprofiles.Any(x => nonBlockedVerificationCenterTypes.Contains(x));
-        //}
-        
         public void Any()
         {
-            var nonBlockedVerificationCenterTypes = new[] { VerificationCenterType.NEP, VerificationCenterType.KEP, VerificationCenterType.PayControl };
-            var authorizedUserCryptoprofiles = new[] { VerificationCenterType.None, VerificationCenterType.NEP};
-            // true
-            var res1 = authorizedUserCryptoprofiles.Any(x => nonBlockedVerificationCenterTypes.Contains(x));
-            
-            var authorizedUserCryptoprofilesNone = new[] { VerificationCenterType.None };
-            // false
-            var res2 = authorizedUserCryptoprofilesNone.Any(x => nonBlockedVerificationCenterTypes.Contains(x));
+            var allElements = new[] { Enum.One, Enum.Two, Enum.Three };
+            var twoElements = new[] { Enum.Zero, Enum.One };
+            var true1 = twoElements.Any(x => allElements.Contains(x)); // true
         }
+
+        #region SelectMany
+        class User
+        {
+            public string Name { private get; set; } // get не нужен, без него нельзя
+            public int Age { get; set; }
+            public List<string> Languages { get; set; }
+        }
+
+        public void SelectMany() 
+        {
+            List<User> users = new List<User>
+            {
+                new User {Name="Том", Age=23, Languages = new List<string> {"английский", "немецкий" }},
+                new User {Name="Боб", Age=27, Languages = new List<string> {"английский", "французский" }},
+                new User {Name="Джон", Age=29, Languages = new List<string> {"английский", "испанский" }},
+                new User {Name="Элис", Age=24, Languages = new List<string> {"испанский", "немецкий" }}
+            };
+
+            var allLanguages = users.SelectMany(u => u.Languages).ToArray();
+
+
+
+            var selectedUsers = users.SelectMany(u => u.Languages, (u, l) => new { User = u, Lang = l })
+                                     .Where(u => u.Lang == "английский" && u.User.Age < 28)
+                                     .Select(u => u.User);
+
+            var selectedLanguages = selectedUsers.SelectMany(u => u.Languages).ToArray();
+        }
+        #endregion
     }
 }

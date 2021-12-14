@@ -75,14 +75,15 @@ namespace ConsoleApp1
 
         public class B9 : A9
         {
-            //public void M()
+            // перегрузка не будет работать
+            public void M()
             //public virtual void M()
             //public new void M()
-            public override void M()
+            //public override void M()
             {
                 Console.WriteLine("This is B");
             }
-
+            
             public void M2()
             {
                 Console.WriteLine("This is B M2");
@@ -343,9 +344,9 @@ namespace ConsoleApp1
 
 
 
-        public class Person2 { }
+        public class Base2 { }
 
-        public class Student : Person2 { }
+        public class Derived2 : Base2 { }
 
         public class C<T>
         {
@@ -390,24 +391,30 @@ namespace ConsoleApp1
         #region CTOR chain
         public class A6
         {
-            public A6() { Console.WriteLine("A created"); }
+            public A6() 
+            { 
+            }
+
+            public A6(string parameter)
+            {
+            }
         }
 
         public class B6 : A6
         {
-            public B6() { Console.WriteLine("B created"); }
+            public B6()
+            { 
+            }
 
-            public B6(string parameter)
+            public B6(string parameter) : base("param2") // закомментировать - вызовется A6
             {
-                Console.WriteLine("B created with parameter: {0}", parameter);
             }
         }
 
         public class C6 : B6
         {   
-            public C6() : base("par") // base обязательно, если в базовом классе есть конструктор с параметрами
+            public C6() : base("param1") // base обязательно, если в базовом классе есть конструктор с параметрами
             {
-                Console.WriteLine("C created");
             }
         }
 
@@ -415,7 +422,6 @@ namespace ConsoleApp1
         {
             public C7() : base()
             {
-                Console.WriteLine("C created");
             }
         }
 
@@ -423,7 +429,6 @@ namespace ConsoleApp1
         {
             public C8()
             {
-                Console.WriteLine("C created");
             }
         }
         #endregion
@@ -443,6 +448,7 @@ namespace ConsoleApp1
             static Parent()
             {
             }
+
             public Parent()
             {
             }
@@ -451,12 +457,15 @@ namespace ConsoleApp1
         public class Child : Parent
         {
             public static int field1 = 0;
+
             static Child()
             {
             }
+
             public Child()
             {
             }
+
             public static void Foo()
             {
             }
@@ -671,7 +680,7 @@ namespace ConsoleApp1
 
         #endregion
 
-        #region Outer Inner
+        #region Outer Inner class
         /// <summary>
         /// Override корректно работает во вложенном классе
         /// </summary>
@@ -681,13 +690,11 @@ namespace ConsoleApp1
             {
                 public override void A()
                 {
-                    Console.WriteLine("Inner");
                 }
             }
 
-            public virtual void A()
+            public virtual void A() // закомментировать - ошибка в Inner
             {
-                Console.WriteLine("Outer");
             }
         }
         #endregion
@@ -894,51 +901,7 @@ namespace ConsoleApp1
         #region STRINGS
         public class Strings
         {
-            public void TestEquality()
-            {
-                string s1 = "foo";
-                string s2 = s1;
-                string s3 = "foo";
-                string s4 = "bar";
-                var a1 = s1 == s2; // по ссылке
-                var a2 = s1 == s4; 
-                var a3 = s1 == s3; 
-                var a4 = s1.Equals(s2); // по значению
-                var a5 = Object.ReferenceEquals(s1, s2); // по ссылке
-                var a6 = Object.ReferenceEquals(s1, s3); // по ссылке
-                var a7 = Object.ReferenceEquals(s1, s4); // по ссылке
-            }
-
-            public void TestEquality2()
-            {
-                string hello = "hello";
-                string helloWorld = "hello world";
-                string helloWorld2 = hello + " world";
-
-                var a1 = helloWorld;
-                var a2 = helloWorld2;
-                var a3 = helloWorld == helloWorld2; // по значению true
-                var a4 = object.ReferenceEquals(helloWorld, helloWorld2); // по ссылке false
-                helloWorld = helloWorld2;
-                var a5 = object.ReferenceEquals(helloWorld, helloWorld2); // ссылке true
-            }
-
-            public void TestIntern()
-            {
-                string hello = "hello";
-                string helloWorld = "hello world";
-                string helloWorld2 = hello + " world";
-
-                var a1 = helloWorld;
-                var a2 = helloWorld2;
-                var a3 = helloWorld == helloWorld2; // по значению true
-                var a4 = object.ReferenceEquals(helloWorld, helloWorld2); // по ссылке false
-                helloWorld2 = "hello world"; // вроде как смысла нет, т.к. string helloWorld2 = hello + " world"; - тем не менее влияет
-
-                // сработало интернирование. приравняли ко 2-й ссылки то же значение, что и для первой, а сами ссылки не приравнивали. 
-                // Несмотря на это проверка по ссылкам true. то true
-                var a5 = object.ReferenceEquals(helloWorld, helloWorld2);
-            }
+            
         }
         #endregion
 
@@ -1034,7 +997,6 @@ namespace ConsoleApp1
             if (foo is Foo3)
             {
             }
-            Type a1 = foo.GetType();
         }
         #endregion
     }

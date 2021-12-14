@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -9,70 +8,63 @@ namespace ConsoleApp1
     {
         private int[] arr = new int[] { 1, 2, 3 };
 
-        public void Ex1()
-        {
-            throw new Exception("Исключение в Ex1");
-        }
-
         public void Ex2()
         {
-            // ошибка компиляции. д.б. только в catch
-            //throw;
+            //throw; // Ошибка CS0156  Оператор throw без аргументов не может использоваться вне предложения catch.
 
-            // в catch  не попадёт, т.к. в try ничего не происходит
+            //throw new Exception(); // можно тут
+
+            // в catch  не попадёт, если в try нет исключения
             try
             {
+                //throw new Exception(); // можно тут
             }
             catch
             {
-                throw;
+                // без аргументов можно только тут - потому что известен тип исключения - можно узнать в (Exception e). 
+                //С аргументами - везде. Можем бросить исключение любого типа
+                throw; 
             }
 
-            
+            // разные комбинации catch и throw
             try
             {
                 var item = arr[10];
             }
-            catch
+            //catch
+            catch (Exception e)
+            //catch (Exception)
             {
-                // CLR сама определяет тип исключения
+                // CLR сама автоматически определяет тип исключения. Скорее всего производительность тут меньше чем при явном вбросе исключения
                 //throw; // System.IndexOutOfRangeException: "Индекс находился вне границ массива"
                 
                 // Принудительно бросаем искл-е
-                //throw new Exception();// "Выдано исключение типа System.Exception"
-            }
-
-            try
-            {
-                var item = arr[10];
-            }
-            catch (Exception e)
-            {
+                throw new Exception(e.Message);// "Выдано исключение типа System.Exception"
+                
+                //throw new Exception();// "Выдано исключение типа System.Exception" ctrl+shift+space - посмотреть сигнатуры
+                
                 throw e; // System.IndexOutOfRangeException: "Индекс находился вне границ массива"
-            }
-
-            try
-            {
-                var item = arr[10];
-            }
-            catch
-            {
-                // Принудительно бросаем искл-е
-                throw new Exception();// "Выдано исключение типа System.Exception"
             }
         }
 
-        public ISerializable Ex3()
+        //public ISerializable Ex3()
+        //public Exception Ex3()
+        public System.Runtime.InteropServices._Exception Ex3()
         {
             try
             {
-                // просто вернёт исключение. не бросит
+                // просто вернёт исключение. не бросит. catch не сработает
                 return new Exception("Исключение в Ex3");
             }
             catch
             {
-                throw;
+                throw; // обязательно, как return
             }
+        }
+        
+        public Exception ReturnNewException()
+        {
+             return new Exception("Исключение");
         }
 
         public void Ex4()
@@ -88,17 +80,16 @@ namespace ConsoleApp1
             // директории нет - т.е. сработает этот, а не catch (FileNotFoundException ex)
             catch (DirectoryNotFoundException ex)
             {
-                Console.WriteLine(ex);
             }
+
             // далее catch-и обрабатываться не будут
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException ex) 
             {
-                Console.WriteLine(ex);
             }
+            
             // Put the least specific exception last.
             catch (IOException ex)
             {
-                Console.WriteLine(ex);
             }
         }
 
@@ -130,77 +121,52 @@ namespace ConsoleApp1
         #region CustomException
         class CustomException : Exception
         {
-            public CustomException(string message)
+            //public CustomException(string message)
+            //public CustomException(string message) : base()
+            public CustomException(string message) : base(message)
+            //public CustomException() : base()
             {
             }
         }
 
         public void CustomExceptionEx()
         {
+            // где в искл-и инфо о строке, переданной в конструктор?
+            // если : base(message) - ConsoleApp1.Exceptions.CustomException: "Custom exception in TestThrow()" - скорее всего перекрываем базовое исключение своим сообщении об исключении, пробрасывая его в конструктор
+            // иначе "Выдано исключение типа "ConsoleApp1.Exceptions+CustomException".". message не видно
             CustomException ex = new CustomException("Custom exception in TestThrow()");
-            throw ex;
+            //CustomException ex = new CustomException();
+            
+            //throw ex;
         }
         #endregion
-
-        public void Ex7()
-        { 
-            try
-            {
-                var a = arr[10];
-            }
-            catch(Exception ex)
-            {
-                throw;
-                throw ex;
-                throw new Exception();
-                throw new Exception("Exception raised");
-            }
-        }
 
         public void TryCatchFinally()
         {
             try
             {
-                var a = arr[10];
                 throw new Exception();
             }
             catch
             {
-                // почему тут нельзя освободить ресурсы?
+                // сработает. почему тут нельзя освободить ресурсы?
             }
             finally
             {
-                // корректное освобождение ресурсов
+                // сработает. корректное освобождение ресурсов
             }
         }
 
-        public void TryCatchFinallyException()
+        void DeclarationConflicts()
         {
-            try
-            {
-                throw new Exception();
-            }
-            catch
-            {
-                // почему тут нельзя освободить ресурсы?
-            }
-            finally
-            {
-                // корректное освобождение ресурсов
-            }
-        }
-
-        /// <summary>
-        /// Почему нет конфликта имён?
-        /// </summary>
-        void TwoTryCatch()
-        {
+            // Почему нет конфликта имён?. видимо try/catch создаёт свои области видимости
             try
             {
                 var a = 0;
             }
             catch
             {
+                var b = 0; // в catch можно объявить переменные
             }
 
             try
@@ -209,6 +175,7 @@ namespace ConsoleApp1
             }
             catch
             {
+                var b = 0;
             }
         }
     }

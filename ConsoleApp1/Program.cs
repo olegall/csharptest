@@ -6,6 +6,10 @@ using static ConsoleApp1.Interfaces;
 using Casting;
 using OOP;
 using Tasks;
+using Keywords;
+using Delegates;
+using Indexers;
+using System.Linq;
 
 namespace ConsoleApp1
 {
@@ -22,11 +26,17 @@ namespace ConsoleApp1
         private static LINQ LINQ = new LINQ();
         private static DelegatesLambda delegatesLambda = new DelegatesLambda();
         private static Exceptions exceptions = new Exceptions();
+        private static Generics generics = new Generics();
         private static Common common = new Common();
         private static ReferenceTypes referenceTypes = new ReferenceTypes();
-
+        private static Delegates.Delegate delegate_ = new Delegates.Delegate();
+        private static Interfaces interfaces = new Interfaces();
+        private New new_ = new New();
+        private static AnonimousTypes anonimousTypes = new AnonimousTypes();
+        private static Operators operators = new Operators();
 
         // инвариантность ковариантность
+        // implicit/explicit conversions
         static void Main(string[] args)
         {
 
@@ -84,13 +94,17 @@ namespace ConsoleApp1
             Console.WriteLine($"***** COMMON *****");
             common.Main();
             common.Ex1();
-            common.Ex2();
+            common.ArrayInit();
             common.Ex3();
-            common.Ex5();
             common.Ex6();
-            common.Ex7();
-            common.Ex8();
             common.Nullable();
+
+            //var prop1 = common.Prop1; // нельзя, т.к. нет get
+            //common.Prop1; // просто так нельзя
+            common.Prop1 = 0;
+            var prop2 = common.Prop2;
+            common.CovarianceContravariance();
+            common.CovarianceContravarianceMetanit();
             #endregion
 
             #region REFERENCE TYPES
@@ -107,11 +121,28 @@ namespace ConsoleApp1
             StaticClassStaticConstructor.GetFoo();
             #endregion
 
+            #region INTERFACES
+            new Interfaces.DerivedA1().InvokeBase();
+
+            // Interfaces.InvokeSignature.Foo() так нельзя - вызвать метод из интерфейса
+            InvokeSignature invokeSignature = new InvokeSignatureClass();
+            invokeSignature.Foo();
+
+            IControl page = new Page();
+            page.Paint();
+            
+            IControl page2 = new Page2();
+            page2.Paint();
+
+
+            #endregion
+
             #region STRINGS
             var strings = new Strings();
-            strings.TestEquality();
-            strings.TestEquality2();
-            strings.TestIntern();
+            strings.Equality();
+            strings.Equality2();
+            strings.Intern();
+            strings.InternMsdn();
             // сравнение строк 3 способа
             #endregion
 
@@ -160,8 +191,6 @@ namespace ConsoleApp1
             dogDog.Say(); // напишет Woof
             animalDog.Say(); // напишет Woof
 
-            
-
             //ошибка
             //Employee e1 = (Employee)new Person("Tom");
 
@@ -186,7 +215,6 @@ namespace ConsoleApp1
             var a7 = new DerivedNewPrivate().ClassName;
             var a8 = new DerivedNewPublic().className;
 
-
             int value = 10;
             A16 a16 = new A16();
             B16 b16 = new B16();
@@ -209,37 +237,36 @@ namespace ConsoleApp1
 
             new Square();
 
-            Person2 p4 = new Person2();
-            Student s = new Student();
-            C<Person2> cp = new C<Person2>();
-            C<Student> cs = new C<Student>();
-            p4 = s;
-            //s = p4;
-            s = (Student)p4;
-            //cp = cs;
-            //cp = (C<Person2>)cs; // как закастить? google: casting generic types
-            cp.x = p4;
-            //cs = cp;
-            s = cs.x;
+            Base2 base2 = new Base2();
+            Derived2 derived2 = new Derived2();
+            C<Base2> cBase2 = new C<Base2>();
+            C<Derived2> cDerived2 = new C<Derived2>();
+            base2 = derived2;
+            derived2 = (Derived2)base2; // без каста - ошибка
+            //cBase2 = (C<Derived2>)cDerived2; // без каста - ошибка. как закастить? google: casting generic types
+            cBase2.x = base2;
+            //cDerived2 = cBase2;
+            derived2 = cDerived2.x;
 
-            Console.WriteLine(SUB_CAPTION);
-            new C6(); // отработают конструкторы по цепочке
-            Console.WriteLine(SUB_CAPTION);
+            new B6(); // по кнопке Продолжить и F11 разный порядок вызова конструкторов
+            new C6(); // отработают конструкторы по цепочке. С6 - самый последний
             new C7(); // отработают конструкторы по цепочке
-            Console.WriteLine(SUB_CAPTION);
             new C8(); // отработают конструкторы по цепочке
 
             // запускать поочерёдно - закомм-ть всё, оставить одно
-            //new Child(); // вызываются к-ры по цепочке static Child() - static Parent() - public Parent() - public Child()
-            //Child.field1 = 1; // вызывается к-р static Child() (убрать new Child())
-            //System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Child).TypeHandle); // вызывается к-р static Child()
-            //Child.Foo(); // вызывается к-р static Child()
+            // При дебаге из IDE - вызываются к-ры по цепочке static Child() - static Parent() - public Parent() - public Child(). почему?
+            // При дебаге по F10, F11 - вызываются к-ры по цепочке static Child() - public Child() - static Parent() - public Parent(). почему? Скорее всего так правильно. При дебаге из IDE - неадекватно
+            //new Child();
+            Child.field1 = 1; // вызывается к-р static Child()
+            Child.Foo(); // не вызывается к-р static Child(). почему?
+            System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(Child).TypeHandle); // не вызывается к-р static Child()
+
 
             B9 b9 = new B9();
             A9 a9 = b9;
             a9.M(); // если M - override - вызовется у класса B9
             b9.M();
-            b9.M2();
+            b9.M2(); // вызовется в итоге virtual void M() A9
 
             Outer outer = new Outer();
             Outer.Inner inner = new Outer.Inner();
@@ -250,20 +277,19 @@ namespace ConsoleApp1
             OOP.CheckType2(new Foo3());
             OOP.CheckType3(new Foo3());
 
-            Console.WriteLine($"{CAPTION_BEGIN} OOP {CAPTION_END}");
-
             OOP.ClassEquality();
 
             IsOperatorExample.Main();
 
             double r = 3.0, h = 5.0;
+            Shape s = new Shape(r, h);
             Shape c = new Circle(r);
             Shape s1 = new Sphere(r);
             Shape l = new Cylinder(r, h);
-            // Display results.
-            Console.WriteLine("Area of Circle   = {0:F2}", c.Area());
-            Console.WriteLine("Area of Sphere   = {0:F2}", s1.Area());
-            Console.WriteLine("Area of Cylinder = {0:F2}", l.Area());
+            var area0 = s.Area();
+            var area1 = c.Area();
+            var area2 = s1.Area();
+            var area3 = l.Area();
             /*
                 Output:
                 Area of Circle   = 28.27
@@ -273,16 +299,16 @@ namespace ConsoleApp1
             #endregion
 
             #region LINQ
-            Console.WriteLine($"***** LINQ *****");
             LINQ . Ex1(); // так можно
-            LINQ.Ex2();
-            LINQ.Ex3();
+            LINQ.AnonimousType();
+            LINQ.Delegate();
             LINQ.Ex4();
             LINQ.Lazy();
-            LINQ.LazyInitialization();
             LINQ.Lazy2();
+            LINQ.Lazy3();
             LINQ.Pagination();
             LINQ.Any();
+            LINQ.SelectMany();
             #endregion
 
             #region DELEGATES
@@ -293,6 +319,8 @@ namespace ConsoleApp1
             delegatesLambda.TestFunc();
             delegatesLambda.CompareDelegates();
             delegatesLambda.InstanceStaticMethod();
+
+            delegate_.Main();
             #endregion
 
             #region OBJECTS
@@ -310,38 +338,41 @@ namespace ConsoleApp1
             #endregion
 
             #region EXCEPTIONS
-            Console.WriteLine($"{CAPTION_BEGIN} EXCEPTIONS {CAPTION_END}");
-            //new Exceptions().Ex1();
-            //new Exceptions().Ex2();
-            //var exc_ex3 = exceptions().Ex3();
+            Console.WriteLine($"\n***** EXCEPTIONS *****");
+            //exceptions.Ex2();
+            var exc_ex3 = exceptions.Ex3();
             //exceptions.TestThrow();
             //exceptions.Ex4();
-            exceptions.Ex5();
+            //exceptions.Ex5();
+            exceptions.CustomExceptionEx();
             exceptions.TryCatchFinally();
+
+            #endregion
+
+            #region GENERICS
+            generics.Main();
+            generics.SomeMethod<Generics.TypeA>(new Generics.TypeA());
+            //generics.SomeMethod<Generics.TypeC>(new Generics.TypeC());
             #endregion
 
             #region KEYWORDS
-            Console.WriteLine($"{CAPTION_BEGIN} KEYWORDS {CAPTION_END}");
+            Console.WriteLine($"***** KEYWORDS *****");
             keywords.As();
-            //new Keywords().Checked();
+            keywords.Checked();
             keywords.Unchecked();
             keywords.Default();
             keywords.Enum();
             keywords.Is();
             keywords.Is2();
+            new DerivedC().Invoke();
+            DerivedC2.Main();
+            DerivedC3.Main();
 
             #region Yield
-            Console.WriteLine($"{SUB_CAPTION} Yield {SUB_CAPTION}");
-            foreach (string s_ in Keywords.GetStrings())
-            {
-                Console.WriteLine(s_);
-                Console.WriteLine("C#");
-            }
-            
-            foreach (char ch in Keywords.GetLetters())
-            {
-                Console.WriteLine(ch);
-            }
+            Console.WriteLine($"***** Yield *****");
+            var strings_ = keywords.GetStrings().ToList();
+
+            var letters = keywords.GetLetters().ToList();
             #endregion
 
             
@@ -351,7 +382,7 @@ namespace ConsoleApp1
             Console.WriteLine($"{SUB_CAPTION} New1 {SUB_CAPTION}");
             keywords.New1();
 
-            keywords.ImplicitExplicitOperator();
+            keywords.ImplicitExplicit();
             keywords.Operator();
             keywords.This1();
             keywords.This2();
@@ -359,8 +390,8 @@ namespace ConsoleApp1
             int initializeInMethod; // можно не инициализировать
             keywords.OutArgExample(out initializeInMethod); // стал 44
 
-            int initializeInMethodRef = 0; // нужно инициализировать
-            keywords.RefArgExample(ref initializeInMethodRef); // стал 44
+            int initializeInMethodRef = 1; // нужно инициализировать
+            keywords.RefArgExample(ref initializeInMethodRef); // стал 10
             #endregion
 
             #region OPERATORS
@@ -381,8 +412,8 @@ namespace ConsoleApp1
             #endregion
 
             #region CASTING
-            CastingClass.Main();
-            UnSafeCast.Main();
+            new CastingClass().Main();
+            new UnSafeCast().Main();
             #endregion
 
             #region MULTITHREADING
@@ -454,7 +485,7 @@ namespace ConsoleApp1
             //AsynchronousProgramming.MainAsync(); // ничем не отличается от MainSync
             //AsynchronousProgramming.MainConcurrently();
             AsynchronousProgramming.MainConcurrently2(); // всё вперемешку
-            //AsynchronousProgramming.MainComposition();
+                                                         //AsynchronousProgramming.MainComposition();
             #endregion
 
             #region DATA STRUCTURES
@@ -492,6 +523,22 @@ namespace ConsoleApp1
             //Console.WriteLine();
 
             //Console.ReadLine();
+            #endregion
+
+            #region INDEXERS
+            var tempRecord = new TempRecord();
+
+            // Use the indexer's set accessor
+            tempRecord[3] = 0;
+            #endregion
+
+            #region ANONIMOUS TYPES
+            anonimousTypes.Main();
+            #endregion
+            
+            #region NULL CONDITIONAL
+            //operators.NullConditional();
+            operators.NullCoalescing();
             #endregion
 
             Console.ReadKey();

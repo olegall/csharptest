@@ -8,22 +8,34 @@ namespace ConsoleApp1
 {
     public class Interfaces
     {
-        /// <summary>
-        /// Скомпилируется ли данный класс?
-        /// </summary>
         interface Interface1
         {
             void F();
             void G();
+            //virtual void VirtualInInterface(); // virtual нельзя
         }
-        class Class1
+
+        public class A1
         {
             public void F() { }
             public void G() { }
+            public virtual void VirtualInClass() { }
         }
-        class Class2 : Class1, Interface1
+
+        // Скомпилируется ли данный класс?
+        // я хочу вызвать извне этот класс, объявил как public. надо так же объявить public и class1, но он должен оставаться приватным. как быть?
+        public class DerivedA1 : A1, Interface1
         {
-            new public void G() { }
+            //new public void G() { }
+            // можно реализовать, несмотря на то, что такой же метод реализован в базовом классе
+            // при вызове не вызовется G класса Class1
+            //public void G() { }
+            //base.G(); // в классе так нельзя
+            public void InvokeBase() 
+            { 
+                base.G();
+            }
+            //VirtualInClass();
         }
 
 
@@ -34,7 +46,7 @@ namespace ConsoleApp1
          Это неявная реализация интерфейсов
          Такой код не скомпилируется, потому что возникнет конфликт имён
          */
-        interface A1
+        interface A2
         {
             void f();
         }
@@ -44,21 +56,36 @@ namespace ConsoleApp1
             void f();
         }
 
-        class C : A1, B1
+        class C : A2, B1
         {
-            void A1.f() { }
+            void A2.f() { }
             void B1.f() { }
         }
 
 
 
-
-
-        interface IEmpty { }
-
-        interface IBase : IEmpty
+        public interface InvokeSignature
         {
-            void Print();
+            void Foo();
+        }
+        
+        // или класс или метод д.б. публичными, т.к. реализуют интерфейс, который по своей природе публичный
+        public class InvokeSignatureClass : InvokeSignature
+        {
+            public void Foo() // обязательно public, если класс не public
+            {
+            }
+        }
+
+
+
+        public interface IEmpty 
+        {
+        }
+
+        public interface IBase : IEmpty // IEmpty обязательно д.б. публичным
+        {
+            void Print(); // может не быть в интерфейсе. private, public, protected нельзя
         }
 
         interface IDerived : IBase, IEmpty
@@ -67,25 +94,24 @@ namespace ConsoleApp1
 
         class A4 : IDerived
         {
-            public void Print()
+            void Print()
             {
-                Console.WriteLine("A.Print()");
             }
-            // IDerived.Print не может быть явной реализацией
-            // т.к. Print не является членом интерфейса IDerived
-            //void IDerived.Print() {
-            //    Console.WriteLine("A.Print()");
+
+            // ошибка - Print нет в IDerived
+            //void IDerived.Print() 
+            //{
             //}
-            void IBase.Print()
+
+            void IBase.Print() // если в вызывающем коде вызвать Print интерфейса IBase, вызовется именно этот метод
             {
-                Console.WriteLine("A.Print()");
             }
         }
 
 
 
 
-        public interface IA
+        public interface IA // может быть public
         {
             void Somework();
         }
@@ -106,26 +132,26 @@ namespace ConsoleApp1
 
 
 
-        interface I
-        {
-            // private, public, protected нельзя
-            void Foo();
-        }
-
         interface I1
         {
             void Foo();
         }
-        struct S1 : I1
+
+        struct S1 : I1 // можно public
         {
             // обязательно public
             public void Foo() { }
         }
+        
+        class C1 : I1 // можно public
+        {
+            // обязательно public
+            public void Foo() { }
+        }
+        
 
 
-
-
-        interface IControl
+        public interface IControl
         {
             void Paint();
         }
@@ -135,19 +161,25 @@ namespace ConsoleApp1
             void Paint();
         }
 
-        class Page : IControl, IForm
+        public class Page : IControl, IForm
         {
-            public void Paint() { }
+            public void Paint() 
+            { 
+            }
         }
 
-        class Page2 : IControl, IForm
+        public class Page2 : IControl, IForm
         {
-            void IControl.Paint() { }
-            void IForm.Paint() { }
+            void IControl.Paint() 
+            {
+            }
+
+            void IForm.Paint() 
+            {
+            }
         }
 
-        #region
-        /*[public]*/ interface I2
+        /*public*/ interface I2
         {
             // нельзя объявлять модификаторы
             // нельзя static
@@ -158,15 +190,12 @@ namespace ConsoleApp1
 
             // CS0524 Интерфейс не может содержать пользовательский тип; 
             // в интерфейсах должны содержаться только методы и свойства.
-            // delegate void Print(int value);
-            //public class Cly   // CS0524, delete user-defined type  
-            //{
-            //}
+            
+            //delegate void Print(int value);
+            
+            //public class Cly {}  // CS0524, delete user-defined type  
 
-            event Action<String> UpdateStatusText;
+            event Action<String> UpdateStatusText; // может содержать события
         }
-        #endregion
-
-        // пустой интерфейс
     }
 }

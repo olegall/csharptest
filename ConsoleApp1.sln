@@ -13,7 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Multithreading", "Multithre
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tasks", "Tasks\Tasks.csproj", "{F966A8E0-6E95-4589-9E02-0EA9E1F9C6B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStructures", "DataStructures\DataStructures.csproj", "{98632646-BE30-40AD-809A-976C0764F940}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStructures", "DataStructures\DataStructures.csproj", "{98632646-BE30-40AD-809A-976C0764F940}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Keywords", "Keywords\Keywords.csproj", "{4517EFA3-D46D-47A9-99FA-69E5F88E2174}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Delegates", "Delegates\Delegates.csproj", "{E76D275E-6213-42A6-98FB-2892EB78321A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexers", "Indexers\Indexers.csproj", "{7D4D1339-8865-4D4F-95FC-A341F86CBD36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +51,18 @@ Global
 		{98632646-BE30-40AD-809A-976C0764F940}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98632646-BE30-40AD-809A-976C0764F940}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98632646-BE30-40AD-809A-976C0764F940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4517EFA3-D46D-47A9-99FA-69E5F88E2174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4517EFA3-D46D-47A9-99FA-69E5F88E2174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4517EFA3-D46D-47A9-99FA-69E5F88E2174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4517EFA3-D46D-47A9-99FA-69E5F88E2174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E76D275E-6213-42A6-98FB-2892EB78321A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E76D275E-6213-42A6-98FB-2892EB78321A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E76D275E-6213-42A6-98FB-2892EB78321A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E76D275E-6213-42A6-98FB-2892EB78321A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4D1339-8865-4D4F-95FC-A341F86CBD36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4D1339-8865-4D4F-95FC-A341F86CBD36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4D1339-8865-4D4F-95FC-A341F86CBD36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4D1339-8865-4D4F-95FC-A341F86CBD36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Casting
+﻿namespace Casting
 {
     class Cast1 { }
     class Cast2 { }
@@ -8,13 +6,11 @@ namespace Casting
     // upcasting downcasting
     public class CastingClass
     {
-        public static void Main()
+        public void Main()
         {
-            double x = 1234.7;
-            int a;
+            double double_ = 1234.7;
             // Cast double to int.
-            a = (int)x;
-            Console.WriteLine(a);
+            int int_ = (int)double_;
 
             // Cast1 cast = (Cast1) new Cast2(); // нельзя кастить несвязанные классы
         }

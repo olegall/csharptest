@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static System.Math;
+using static System.Math; // используем класс, а не неймспейс. поэтому static
 
 namespace ConsoleApp1
 {
@@ -33,61 +33,88 @@ namespace ConsoleApp1
         #region As
         public void As()
         {
-            // почему null?
-            double? d1 = 1234.7;
-            int? a1 = d1 as int?;
+            double? d1 = 1.1;
+            int? null1 = d1 as int?; // null, потому что int? не инициализирован и по дефолту null
+            double? res1 = d1 as double?;
 
-            double d2 = 21.34;
-            int res1 = (int)(d2);
+            int? i1 = 0;
+            double? null2 = i1 as double?; // null, потому что double? не инициализирован и по дефолту null
+            // d1 as int; // ошибка
+            // d1 as null; // ошибка
 
-            double d3 = 22.34;
-            int res2 = Convert.ToInt32(d3);
+            double d2 = 2.2;
+            int res_2 = (int)(d2); // 2 - потеря точности
 
-            int? a3 = 1234.7 as int?;
+            double d3 = 3.3;
+            int res_3 = Convert.ToInt32(d3); // 3 - потеря точности
 
             string str = "str";
-            object obj1 = str as object;
+            object res_str = str as object;
+            // object as str; // нельзя
 
-            object obj2 = new object();
-            string str2 = obj2 as string;
+            string res_null = new object() as string;
+            //new object() as ""; // обязательно тип
 
             IEnumerable<int> numbers = new[] { 10, 20, 30 };
-            IList<int> indexable = numbers as IList<int>;
+            IList<int> res_list = numbers as IList<int>;
 
-            //int a4 = 1 as int;
+            // 1 as int; // д.б. ссылочный тип или nullable int
         }
         #endregion
 
         #region Checked
         public void Checked()
         {
-            int ten = 10;
-            int i2 = 2147483647 + ten; // переполнилось
+            int overflowValue = 1;
+            int res_minus2147483648 = int.MaxValue + overflowValue; // переполнилось
+            // int.MaxValue + 1; // ошибка на этапе компиляции. прямо 1 нельзя
 
-            //int i3 = 2147483647 + 10; // ошибка компиляции
+            // checked(int.MaxValue + overflowValue); // просто нельзя. checked вовращает int. это как просто написать число
 
-            // checked(2147483647 + ten); // просто нельзя. вовращает int. это как просто написать число
-
-            var a1 = checked(2147483647 + ten); // OverflowException
+            //var res1 = checked(int.MaxValue + overflowValue); // OverflowException
 
             checked
             {
-                var a2 = 2147483647 + ten; // OverflowException
+                //var res2 = int.MaxValue + overflowValue; // OverflowException
             } 
         }
         #endregion
 
-        #region Default
-        private void DisplayDefaultOf<T>()
+        #region Unchecked
+        public void Unchecked()
         {
-            var val = default(T);
-        }
+            int overflowValue = 1;
 
+            // эксепшна нигде нет. с checked - есть
+
+            unchecked
+            {
+                int res1 = int.MaxValue + overflowValue;
+            }
+
+            // эквивалентно
+            int res2 = unchecked(int.MaxValue + overflowValue);
+            unchecked
+            {
+                int res3 = int.MaxValue + overflowValue;
+            }
+
+            int res4 = int.MaxValue + overflowValue;
+        }
+        #endregion
+
+        #region Default
         public void Default()
         {
-            var a1 = default(int);
-            var a2 = default(object);
-            DisplayDefaultOf<double>();
+            var res_0 = default(int);
+            var res_null = default(object);
+            var res2_null = default(string);
+            DefaultOf<double>();
+        }
+
+        private void DefaultOf<T>()
+        {
+            var res_0 = default(T);
         }
         #endregion
 
@@ -119,24 +146,26 @@ namespace ConsoleApp1
         {
             Field1 = 1,
             Field2,
-            Field3 = Field1 * Field2
+            Field3 = Field1 + Field2
         }
 
 
         public void Enum()
         {
-            Season spring = Season.Spring;
-            int springVal = (int)Season.Spring;
+            Season result_Spring = Season.Spring;
+            int res_zero = (int)Season.Spring;
 
-            Season summer1 = (Season)1;
-            Season summer2 = (Season)Season.Summer;
-            Season summer3 = (Season)(Season)(Season)Season.Summer;
+            Season res1_Summer = (Season)1;
+            Season res2_Summer = (Season)Season.Summer;
+            Season res3_Summer = (Season)(Season)(Season)Season.Summer;
 
-            var bits = (byte)Bits._10;
+            var res_9 = (byte)Bits._10;
 
-            var enum1 = (int)Enum1.Field3;
+            var res_3 = (int)Enum1.Field3;
 
-            Enum a;
+            Enum a = null;
+            //Enum res_a = new Enum();
+
             // внутри метода нельзя, т.к. тип. Такой же эффект - если объявить класс
             //enum Season
             //{
@@ -145,7 +174,6 @@ namespace ConsoleApp1
             //    Autumn,
             //    Winter
             //}
-
         }
 
 
@@ -156,16 +184,14 @@ namespace ConsoleApp1
         { 
             int i = 27;
             object iBoxed = i;
-            var a1 = iBoxed is int;
-            var a2 = iBoxed is long;
+            var true1 = iBoxed is int;
+            var false1 = iBoxed is long;
 
             int? a = 42;
-            var a3 = a is int valueOfA;
-            var a4 = a is int;
-            var a5 = a is object;
-            var a6 = a is double;
-
-
+            var true2 = a is int valueOfA; // нигде не объявлена
+            var true3 = a is int;
+            var true4 = a is object;
+            var false2 = a is double;
         }
 
         public void Is2()
@@ -180,7 +206,7 @@ namespace ConsoleApp1
                 var a3 = jNullable.GetType();
                 var a4 = a.GetType();
                 var a5 = b.GetType();
-                Console.WriteLine(a + b);  // output 30
+                var a6 = a + b;  // 30
             }
         }
         #endregion
@@ -188,8 +214,7 @@ namespace ConsoleApp1
         #region New
         public class BaseC
         {
-            public int x = 55;
-            // public обязательно
+            public int x = 55; // public обязательно
 
             public virtual void Foo()
             {
@@ -235,19 +260,10 @@ namespace ConsoleApp1
         #endregion
 
         #region Params
-        private void FooParams(params string[] lines)
-        {
-        }
-
-        // нельзя не массив
-        //private void FooParams2(params string line)
-        //{
-        //}
-
         public void Params()
         {
             // можно без params
-            FooParams(new string[] { "1", "2", "3" });
+            FooParams(new string[] { "A", "B", "C" });
 
             // необходимо params
             FooParams("A", "B", "C");
@@ -256,6 +272,9 @@ namespace ConsoleApp1
             FooParams();
             FooParams(new string[0]);
         }
+
+        private void FooParams(params string[] lines) { }
+        //private void FooParams2(params string line) {} // нельзя не массив
         #endregion
 
         #region Switch
@@ -276,38 +295,15 @@ namespace ConsoleApp1
         }
         #endregion
 
-        #region Unchecked
-        public void Unchecked()
-        {
-            unchecked
-            {
-                int a1 = 2147483647 + 10;
-            }
-            int a2 = unchecked(2147483647 + 10);
-
-            int ten = 10;
-
-            // эквивалентно
-            unchecked
-            {
-                int a3 = 2147483647 + ten;
-            }
-            int a4 = 2147483647 + ten;
-        }
-        #endregion
-
         #region Yield
-        public static IEnumerable<string> GetStrings()
+        public IEnumerable<string> GetStrings()
         {
-            yield return "Hello";
-            //Console.WriteLine("Borland");
-            yield return "World";
-            yield return "1";
-            yield return "2";
-            yield return "3";
+            yield return "a";
+            yield return "b";
+            yield return "c";
         }
 
-        public static IEnumerable<char> GetLetters()
+        public IEnumerable<char> GetLetters()
         {
             yield return 'A';
             yield break;
@@ -328,24 +324,32 @@ namespace ConsoleApp1
             public Digit(byte digit)
             {
                 if (digit > 9)
-                {
                     throw new ArgumentOutOfRangeException(nameof(digit), "Digit cannot be greater than nine.");
-                }
+
                 this.digit = digit;
             }
 
             // д.б. формат public static implicit|explicit operator
-            public static implicit operator byte(Digit d) => d.digit;
-            public static explicit operator Digit(byte b) => new Digit(b);
+            public static implicit operator byte(Digit d) => d.digit; // объявляем для дальнейшего использования
 
-            public override string ToString() => $"{digit}";
+                                            // при касте к Digit  получаем объект Digit
+                                                                  // Cработает конструктор public Digit(byte digit).
+            public static explicit operator Digit(byte b) =>      new Digit(b); // объявляем для дальнейшего использования.
+
+                                                            // Cработает конструктор public Digit()
+            //public static explicit operator Digit(int a) => new Digit();
+
+            
         }
 
-        public void ImplicitExplicitOperator()
+        public void ImplicitExplicit()
         {
-            var d = new Digit(7);
-            byte number = d; // implicit. output: 7
-            Digit digit = (Digit)number; // explicit. output: 7
+            byte res_1 = new Digit(1); // implicit. output: 7. Объект Digit присваиваем байту
+
+                          // explicit
+            Digit digit = (Digit)2; // кастим 5 к Digit. 
+
+            // если раскомментировать оба public static explicit operator Digit(byte b) =>, public static explicit operator Digit(int a) =>
         }
         #endregion
 
@@ -366,19 +370,18 @@ namespace ConsoleApp1
             // везде д.б. тип Fraction, т.к. перегружаем внутри типа
             public static Fraction operator -(Fraction a) => new Fraction(-a.num, a.den);
 
-            public static Fraction operator +(Fraction a, Fraction b) => new Fraction(a.num * b.den, 
-                                                                                      a.num + b.den);
+            public static Fraction operator +(Fraction a, Fraction b) => new Fraction(a.num + b.num, a.den + b.den);
         }
 
         public void Operator()
         {
-            var a = new Fraction(5, 4);
+            var a = new Fraction(4, 5);
             var b = new Fraction(1, 2);
 
-            var a1 = +a;   // 5 4
-            var a2 = a;    // 5 4
-            var a3 = -a;   // -5 4
-            var a4 = a + b; // 10 7
+            var res1_4_5 = +a;   // 4 5
+            var res2_4_5 = a;    // 4 5
+            var res3_4_minus5 = -a; // 4 -5
+            var res4_7_10 = a + b; // 5 7
         }
         #endregion
 
@@ -394,13 +397,13 @@ namespace ConsoleApp1
 
             public Employee Get()
             {
-                return this;
+                return this; // возвращает то же, что new Employee("Tom")
             }
         }
 
         public void This1()
         {
-            Employee E1 = new Employee("Mingda Pan").Get();
+            var e1 = new Employee("Tom").Get();
         }
         #endregion
 
@@ -442,6 +445,8 @@ namespace ConsoleApp1
             number = 44; // обязательно присвоить. ошибка
         }
 
+        // что происходит под капотом? работает упаковка и распаковка?
+        // https://stackoverflow.com/questions/53317484/c-sharp-pass-by-ref-under-the-hood-is-it-really-pass-by-reference
         public void RefArgExample(ref int number) // ref arguments may be modified
         {
             number = 10; // не обязательно присваивать
@@ -449,8 +454,7 @@ namespace ConsoleApp1
 
         class CS0663_Example
         {
-            // Compiler error CS0663: "Cannot define overloaded
-            // methods that differ only on ref and out".
+            // Compiler error CS0663: "Cannot define overloaded methods that differ only on ref and out".
             public void SampleMethod(out int i) { i = 0; }
             //public void SampleMethod(ref int i) { }
         }
@@ -469,34 +473,30 @@ namespace ConsoleApp1
 
         class Product
         {
-            public Product(string name, int newID)
-            {
-                ItemName = name;
-                ItemID = newID;
-            }
+            public string Name { get; set; }
+            public int Id { get; set; }
 
-            public string ItemName { get; set; }
-            public int ItemID { get; set; }
+            public Product(string name, int id)
+            {
+                Name = name;
+                Id = id;
+            }
         }
 
-        /// <summary>
-        /// Какой смысл так делать, если и так ссылочный тип
-        /// </summary>
-        /// <param name="itemRef"></param>
-        private static void ChangeByReference(ref Product itemRef)
+        private static void ChangeByReference(ref Product itemRef) // Какой смысл так делать, если и так ссылочный тип
         {
             // Change the address that is stored in the itemRef parameter.
             itemRef = new Product("Stapler", 99999);
 
             // You can change the value of one of the properties of
             // itemRef. The change happens to item in Main as well.
-            itemRef.ItemID = 12345;
+            itemRef.Id = 12345;
         }
 
-        public void InArgExample(/*in*/ int number) // возможность "Ссылки только для чтения недоступна для в C# 7.0. Используйте версию 7.2 или более позднюю"
+        public void InArgExample(in int number)
         {
             // Uncomment the following line to see error CS8331
-            //number = 19;
+            //number = 19; // доступна только для чтения
         }
         #endregion
     }

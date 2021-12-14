@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OOP
+﻿namespace OOP
 {
     public class Base { }
 
@@ -15,7 +13,7 @@ namespace OOP
             var a2 = b is Derived;  // output: False
 
             object d = new Derived();
-            var a3 = d is Base;  // output: True
+            var a3 = d is Base;  // output: True. т.к. наследник
             var a4 = d is Derived; // output: True
         }
     }
