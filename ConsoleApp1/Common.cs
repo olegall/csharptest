@@ -10,6 +10,9 @@ namespace ConsoleApp1
         class Compare1 { }
         class Compare2 { }
 
+        readonly int a1 = 0; // в чём отличие?
+        static readonly int a2 = 0;
+
         public void Main()
         {
             //var obj = null; // нельзя - не типизирована
